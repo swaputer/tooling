@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "swaputer-active-release/1",
+  "release": {
+    "name": "swaputer-v1.2-rc4",
+    "protocolVersion": "1.2",
+    "environment": "testnet",
+    "deploymentSourceCommit": "834816651c50026ee408438ee3b60fde3c3f4c04"
+  },
+  "network": {
+    "chainId": 84532,
+    "name": "Base Sepolia",
+    "explorerUrl": "https://sepolia.basescan.org"
+  },
+  "upstream": {
+    "uniswapV4": {
+      "poolManager": "0xf7F5aB3DcA35e17dE187b459159BC643853B3c67",
+      "positionManager": "0x0B32f74f8365d535783949E014B7754047B64e31",
+      "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+      "universalRouter": "0x8B844f885672f333Bc0042cB669255f93a4C1E6b",
+      "runtimeCodeHashes": {
+        "poolManager": "0xd49bdfce86ce75c9927a3b7db8fae5b63c3f82ce75b099084bad315485e826cc",
+        "positionManager": "0x3c87fb51995d3b4c4e0a49b22ed3a2497d0e9ba24c29419a56c88c926ad9cbb1",
+        "permit2": "0xdcde65555316946c298e4c60c6213eb5c3aeab4354d1f3fac5427236bcbb9ebe",
+        "universalRouter": "0x01577a50bc57965c0eb0e4081ff096f02924449a8954b75323517f83c7d6ca2b"
+      },
+      "poolFee": 3000,
+      "tickSpacing": 60
+    }
+  },
+  "core": {
+    "worldId": "0x6b0a7beb43df6641970b1f1878025f9bb629a379f73c64a83d4269a2a80996fd",
+    "factory": "0x5f3362c12Fe33c0845000B42Dff07edCf56126B7",
+    "router": "0xa70C0C74F2Dc2c0538730CA3687e078b3d0c2E56",
+    "kernel": "0xCc0f598e82E14035213ef470f19f3149005b5191",
+    "hook": "0xaEeAfe42295f59939Dc8E96cE8A3FDcAF6d820cC",
+    "gasToken": "0xf726D73FfACD5972E4529A01136AB840866CCBee",
+    "startBlock": 46411247
+  },
+  "programs": {
+    "defaultSrc20": {
+      "programId": "0x011ad549e6b674fec0ec39ec30c14e88ff9ff8324953fa1360b95f9ff3df7fa1",
+      "codeHash": "0xaedd7bd1543d57afaeb94f6b46e28ba4c1ef7cdd2ad4affca011b17056036869"
+    },
+    "openMintSrc20CodeHash": "0xaedd7bd1543d57afaeb94f6b46e28ba4c1ef7cdd2ad4affca011b17056036869",
+    "marketEscrow": {
+      "referenceProgramId": "0x015221702fc31228c6feecb8a90080cbee0f5fd12bf3170d80fcc65e1fc296ec",
+      "codeHash": "0x6da9921193ebfe79468ef74f5b94925b66bf8230e145234a77868f1e5a85614b"
+    },
+    "seth": {
+      "programId": "0x01e450e40015a7c4f2ec72a48d09dfb4b645a962fc0273ce80b00b49a136c7b2",
+      "codeHash": "0x0ba319925e010cc61d6af3c0ef5dc9edb3bcfa1f6588e4ded86e744dbd3fc162"
+    }
+  },
+  "applications": {
+    "marketFactory": "0xDA8926d26461285Dab8fe79326624EaEc39CD757",
+    "referenceMarket": "0xc77f77d19aB6f02A55f7097e98bC987FA787aC61",
+    "sethVault": "0xC1F8fD09742167af52c81f4FA0C04E0EEb3908cb",
+    "auctionExample": {
+      "factory": "0x4B05D802e138A64f58C3f914bF42b96A31bd7D87",
+      "escrowCodeHash": "0x0b68683f866e3e83789420824530612988d5e7bfa4f372c2f84c80b75c7cf53a",
+      "indexed": false
+    }
+  },
+  "runtimeCodeHashes": {
+    "factory": "0xf82281f18223a93de86820f90be864f0963c9af8c02403c302c0513ad8eeef16",
+    "router": "0xbd15437fae39c4e2ff1d604bee0352f7d24ff2b25b663281336f9f6161dd7ea1",
+    "kernel": "0xc72a39b6c9ad76a31594d2eb4d366f1e4f6586e88721cd46af8f208e0630f736",
+    "hook": "0x278c9239b616e3035e37f8494488adee5a2738c9d4ac1790f80eae9b70faec7f",
+    "gasToken": "0xb646f2826039460ed6b4b55df058a5021ef0a4633bec50fc3a6b2e270a91e06f",
+    "marketFactory": "0xd4ef75dbec8f23eaa351017a9c6793d7321f66ccfb35ae2d1d1eeb8de09414f3",
+    "referenceMarket": "0xd2783fb58ba3609cedbf5889bb705ac1ed4329ff03b5b4138e320bd59a69718e",
+    "sethVault": "0xfa7ad1b5afb65c6911341a9a2c447f1bcb4e4b9ec4e3b113c5dc33f899f86d90"
+  },
+  "parameters": {
+    "vmInputWei": "1000000000000",
+    "sqrtPriceLimitX96": "4295128740",
+    "minNetTokenOut": "1",
+    "marketExpirySeconds": 86400,
+    "marketEscrowByteGasLimit": 8000,
+    "sethByteGasLimit": 8000
+  },
+  "indexer": {
+    "confirmations": 12,
+    "reorgDepth": 64,
+    "backfillBatch": 1000,
+    "reconcileInterval": "20s"
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "manifestHash": "0x94aa9b85420f8381d916583c6b9cc0c059c238f1d2526b14a43deb06d9baa388"
+  }
+}

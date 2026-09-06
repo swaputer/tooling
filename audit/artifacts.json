@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "compilerProfile": "solc-0.8.26-via-ir-optimizer-200-cancun",
+  "limits": {
+    "eip170RuntimeBytes": 24576,
+    "eip3860InitcodeBytes": 49152
+  },
+  "contracts": {
+    "SwapVMHook": {
+      "creationCodeHash": "0xddcc7914b6e3a101b00ccce399fc7a2d0ccb4e2bc037b8baf1142560badc29b2",
+      "deployedRuntimeCodeHash": "0xc0d8bd2b1d816056aafb1bbd91d1e55f6b00357eeca54162165f806f44812508",
+      "initcodeBytes": 7078,
+      "runtimeBytes": 5842,
+      "eip170MarginBytes": 18734,
+      "eip3860MarginBytes": 42074,
+      "creationCodeStoreCommitment": "0xddcc7914b6e3a101b00ccce399fc7a2d0ccb4e2bc037b8baf1142560badc29b2"
+    },
+    "SwapVMKernel": {
+      "creationCodeHash": "0x0a9486d5dfa79bbe0eac0ee8748b013836d5a903924db1b62c313eee81ce1c33",
+      "deployedRuntimeCodeHash": "0xd9e41bd0b8eacd4f93d5975e08ab2b6405319181520bfb63cdf2039bd86ffca4",
+      "initcodeBytes": 22228,
+      "runtimeBytes": 21918,
+      "eip170MarginBytes": 2658,
+      "eip3860MarginBytes": 26924,
+      "creationCodeStoreCommitment": "0x0a9486d5dfa79bbe0eac0ee8748b013836d5a903924db1b62c313eee81ce1c33"
+    },
+    "SwapVMGasToken": {
+      "creationCodeHash": "0x5c8c737c0ba809cfa3f81d047278fc564626751149fe62c674a46b261a9587a9",
+      "deployedRuntimeCodeHash": "0xcaeb77868e084ce07ed0788b053310a4e56fb38cd68b2a3bd14e9c4b22a22f5d",
+      "initcodeBytes": 1554,
+      "runtimeBytes": 1350,
+      "eip170MarginBytes": 23226,
+      "eip3860MarginBytes": 47598,
+      "creationCodeStoreCommitment": null
+    },
+    "SwapVMReferenceRegistry": {
+      "creationCodeHash": "0x648a4b89bc8c5df34562836f91f577619c00cc7bd471c427f47927937167b5a2",
+      "deployedRuntimeCodeHash": "0x2946cb82853b48b67899d247ee1296a213c461af319c1d41db796326591235b6",
+      "initcodeBytes": 1632,
+      "runtimeBytes": 1606,
+      "eip170MarginBytes": 22970,
+      "eip3860MarginBytes": 47520,
+      "creationCodeStoreCommitment": null
+    },
+    "SwapVMRouter": {
+      "creationCodeHash": "0xa8aa8805c4534307c925adf719acf82b5d44fe369cc7d76b95d94789c75aca99",
+      "deployedRuntimeCodeHash": "0xa0ff3c410d56a33b16ac7bd27f10d218beac287d6ba2b070542f98bfaeaf644d",
+      "initcodeBytes": 7032,
+      "runtimeBytes": 6686,
+      "eip170MarginBytes": 17890,
+      "eip3860MarginBytes": 42120,
+      "creationCodeStoreCommitment": null
+    },
+    "SwapVMWorldFactory": {
+      "creationCodeHash": "0xd2a2dceb1fb77f9a9f4838916cbaa68af147eac893d5533810023eaf080fce7d",
+      "deployedRuntimeCodeHash": "0x92d27f6a36bea8bb726910b76661db8dc0800366d61e4f301bb8ab464beca560",
+      "initcodeBytes": 22031,
+      "runtimeBytes": 12362,
+      "eip170MarginBytes": 12214,
+      "eip3860MarginBytes": 27121,
+      "creationCodeStoreCommitment": null
+    },
+    "SwapVMWorldDeployer": {
+      "creationCodeHash": "0x120c10dd3dab62ed70d2ca99c64b4413b09c92f9d30b3a37c89db50c5cbe80d7",
+      "deployedRuntimeCodeHash": "0xd7798d34186fd40e7535dcbf9a1432e4e386d8a7838784e12bec73dea94916d4",
+      "initcodeBytes": 2812,
+      "runtimeBytes": 2548,
+      "eip170MarginBytes": 22028,
+      "eip3860MarginBytes": 46340,
+      "creationCodeStoreCommitment": null
+    },
+    "SwapVMCreationCodeStore": {
+      "creationCodeHash": "0xe9f9c6bfc2cf53d5d77e5836110da4dc3291b8a1edf18124fc63920cd0e5dedc",
+      "deployedRuntimeCodeHash": "0x0194a2ad25d102910590e76e8c7fa52a8595c1ac112c9ef30c43ba62aee880c2",
+      "initcodeBytes": 279,
+      "runtimeBytes": 57,
+      "eip170MarginBytes": 24519,
+      "eip3860MarginBytes": 48873,
+      "creationCodeStoreCommitment": null
+    }
+  },
+  "integratedComponents": {
+    "SwapVMMiniVM": {
+      "standaloneDeployment": false,
+      "ownedByArtifact": "SwapVMKernel",
+      "source": "src/SwapVMMiniVM.sol"
+    }
+  },
+  "referencePackages": {
+    "SRC20": {
+      "packageHash": "0x8699a93b015eb99ed1e30d713f1183f710eb92d6bbdb92fd7086490e84fde792",
+      "sourceSha256": "18d9485cded4a96d61f1a9014574ef25f197dbcfac605f2265355caea4db2aa2"
+    },
+    "SRC721": {
+      "packageHash": "0x473bc4130c5de9e9981bca274ea85f315c5e7f67aa6654f675ec3b49475c8aad",
+      "sourceSha256": "722cb2ebe56bb4c8546d9d6dfc883ddef23147ffcace34702241ef7881f4653c"
+    },
+    "SRC1155": {
+      "packageHash": "0x258c71844de4694f71453b9aabe1344ce6f43061ffc61fdc85e5940af66404ed",
+      "sourceSha256": "0d04fb09f6769846bc0ab0f8bf3e51b84eb2b0a8f9f518151ba8cbd7cedbbf88"
+    },
+    "CPAMM": {
+      "packageHash": "0x2d5b233b9056011f5a1fbed8781b5c12963ba6bcbcf9a79cfcc0d1ebaf8a3e4b",
+      "sourceSha256": "63a1053b4cd5c10660fa0a197fb9fe0f40996841c4d0aeef79649a226ff705a3"
+    }
+  }
+}

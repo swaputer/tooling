@@ -1,0 +1,43 @@
+{
+  "name": "@swaputer/indexer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "swaputer-indexer": "./dist/src/cli.js",
+    "swaputer-indexer-ops": "./dist/src/operations-cli.js"
+  },
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "scripts": {
+    "build": "npm run registry:check && tsc -p tsconfig.json",
+    "typecheck": "npm run registry:check && tsc -p tsconfig.json --noEmit",
+    "test": "npm run test:mock",
+    "test:mock": "npm run build && node --test dist/test/indexer.test.js dist/test/events.test.js dist/test/database.test.js dist/test/cli.test.js dist/test/event-abi.test.js dist/test/derived-events.test.js dist/test/registry.test.js dist/test/operations.test.js",
+    "test:e2e": "npm run build && node --test dist/test/anvil-e2e.test.js",
+    "test:compiler-e2e": "npm run build && node --test dist/test/compiler-events-e2e.test.js",
+    "migrate:test": "npm run build && node --test --test-name-pattern='migration' dist/test/database.test.js",
+    "audit": "npm audit",
+    "registry:generate": "node scripts/generate-reference-registry.mjs",
+    "registry:check": "node scripts/generate-reference-registry.mjs --check"
+  },
+  "dependencies": {
+    "@noble/hashes": "1.7.1",
+    "@swaputer/receipt-codec": "file:../receipt-codec",
+    "better-sqlite3": "13.0.3"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "9.6.0",
+    "@types/node": "22.10.2",
+    "typescript": "5.7.3"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://swapvm.local/schema/deployment-manifest-v1.schema.json",
+  "title": "SwapVM Canonical Deployment Manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "protocolVersion", "release", "chainId", "worldConfigHash", "poolManager", "factory", "referenceRegistry", "worldDeployer", "artifactStores", "world", "gasToken", "kernel", "hook", "router", "limits", "referencePrograms", "compiler", "deployment", "integrity"],
+  "properties": {
+    "schemaVersion": { "const": "1" },
+    "protocolVersion": { "enum": ["1.1", "1.2"] },
+    "release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["environment", "auditStatus", "auditCandidateTag", "auditCandidateCommit", "economicValue", "publicMainnetDeploymentAllowed", "auditedReleaseArtifact"],
+      "properties": {
+        "environment": { "enum": ["local", "testnet"] },
+        "auditStatus": { "const": "unaudited" },
+        "auditCandidateTag": { "const": "swaputer-v1.1-stage7c-rc2" },
+        "auditCandidateCommit": { "const": "afa54c2e02e7e91430b14b6884faff5e3f5867d9" },
+        "economicValue": { "const": "none" },
+        "publicMainnetDeploymentAllowed": { "const": false },
+        "auditedReleaseArtifact": { "type": "null" }
+      }
+    },
+    "chainId": { "type": "integer", "minimum": 1 },
+    "worldConfigHash": { "$ref": "#/$defs/bytes32" },
+    "poolManager": { "$ref": "#/$defs/code" },
+    "factory": { "$ref": "#/$defs/code" },
+    "referenceRegistry": { "$ref": "#/$defs/code" },
+    "worldDeployer": { "$ref": "#/$defs/code" },
+    "artifactStores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kernelCreationCode", "hookCreationCode"],
+      "properties": {
+        "kernelCreationCode": { "$ref": "#/$defs/store" },
+        "hookCreationCode": { "$ref": "#/$defs/store" }
+      }
+    },
+    "world": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["poolKey", "worldId", "byteGasPrice", "maxByteGasLimit", "initialSqrtPriceX96", "sealed", "sealedAtBlock"],
+      "properties": {
+        "poolKey": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["currency0", "currency1", "fee", "tickSpacing", "hooks"],
+          "properties": {
+            "currency0": { "const": "ETH" },
+            "currency1": { "$ref": "#/$defs/address" },
+            "fee": { "type": "integer", "minimum": 0, "maximum": 16777215 },
+            "tickSpacing": { "type": "integer", "minimum": -8388608, "maximum": 8388607 },
+            "hooks": { "$ref": "#/$defs/address" }
+          }
+        },
+        "worldId": { "$ref": "#/$defs/bytes32" },
+        "byteGasPrice": { "$ref": "#/$defs/uintString" },
+        "maxByteGasLimit": { "const": 1000000 },
+        "initialSqrtPriceX96": { "$ref": "#/$defs/uintString" },
+        "sealed": { "const": true },
+        "sealedAtBlock": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "gasToken": { "$ref": "#/$defs/gasToken" },
+    "kernel": { "$ref": "#/$defs/code" },
+    "hook": { "$ref": "#/$defs/code" },
+    "router": { "$ref": "#/$defs/router" },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["vmVersion", "receiptVersion", "isaHash", "maxCodeBytes", "maxStackWords", "maxMemoryBytes", "maxCallDepth", "maxReceiptPayloadBytes"],
+      "properties": {
+        "vmVersion": { "enum": [1, 2] },
+        "receiptVersion": { "const": 1 },
+        "isaHash": {
+          "enum": [
+            "0x2f0059846af771cb9f77e74d5f728744a9b8dbe69313d146b8a5e7fdcbe7c118",
+            "0x5958f1a3baf744e5ed92f096a964ee14779db2e32e70a2982c53080eb3cd92c2"
+          ]
+        },
+        "maxCodeBytes": { "const": 16384 },
+        "maxStackWords": { "const": 1024 },
+        "maxMemoryBytes": { "const": 65536 },
+        "maxCallDepth": { "const": 32 },
+        "maxReceiptPayloadBytes": { "const": 65536 }
+      }
+    },
+    "referencePrograms": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["src20", "src721", "src1155", "cpamm"],
+      "properties": {
+        "src20": { "$ref": "#/$defs/bytes32" },
+        "src721": { "$ref": "#/$defs/bytes32" },
+        "src1155": { "$ref": "#/$defs/bytes32" },
+        "cpamm": { "$ref": "#/$defs/bytes32" }
+      }
+    },
+    "compiler": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "hash"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "minLength": 1 },
+        "hash": { "$ref": "#/$defs/bytes32" }
+      }
+    },
+    "deployment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["blockHash", "blockNumber", "txHash", "factoryAddress", "routerAddress", "factoryEventTxIndex"],
+      "properties": {
+        "blockHash": { "$ref": "#/$defs/bytes32" },
+        "blockNumber": { "type": "integer", "minimum": 0 },
+        "txHash": { "$ref": "#/$defs/bytes32" },
+        "factoryAddress": { "$ref": "#/$defs/address" },
+        "routerAddress": { "$ref": "#/$defs/address" },
+        "factoryEventTxIndex": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceControlCommit", "treeCommitment", "artifactCommitment", "specKeccak256", "isaKeccak256", "manifestHash", "signature"],
+      "properties": {
+        "sourceControlCommit": { "type": "string", "minLength": 1 },
+        "treeCommitment": { "$ref": "#/$defs/bytes32" },
+        "artifactCommitment": { "$ref": "#/$defs/bytes32" },
+        "specKeccak256": { "$ref": "#/$defs/bytes32" },
+        "isaKeccak256": { "$ref": "#/$defs/bytes32" },
+        "manifestHash": { "$ref": "#/$defs/bytes32" },
+        "signature": { "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/signature" }] }
+      }
+    }
+  },
+  "$defs": {
+    "address": { "type": "string", "pattern": "^0x[0-9a-fA-F]{40}$" },
+    "bytes32": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+    "uintString": { "type": "string", "pattern": "^(0|[1-9][0-9]*)$" },
+    "code": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["address", "extcodehash", "runtimeCodeHash"],
+      "properties": {
+        "address": { "$ref": "#/$defs/address" },
+        "extcodehash": { "$ref": "#/$defs/bytes32" },
+        "runtimeCodeHash": { "$ref": "#/$defs/bytes32" }
+      }
+    },
+    "store": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["address", "extcodehash", "runtimeCodeHash", "payloadHash"],
+      "properties": {
+        "address": { "$ref": "#/$defs/address" },
+        "extcodehash": { "$ref": "#/$defs/bytes32" },
+        "runtimeCodeHash": { "$ref": "#/$defs/bytes32" },
+        "payloadHash": { "$ref": "#/$defs/bytes32" }
+      }
+    },
+    "gasToken": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["address", "extcodehash", "runtimeCodeHash", "decimals", "initialSupply", "initialHolder", "distributionCommitment"],
+      "properties": {
+        "address": { "$ref": "#/$defs/address" },
+        "extcodehash": { "$ref": "#/$defs/bytes32" },
+        "runtimeCodeHash": { "$ref": "#/$defs/bytes32" },
+        "decimals": { "const": 18 },
+        "initialSupply": { "$ref": "#/$defs/uintString" },
+        "initialHolder": { "$ref": "#/$defs/address" },
+        "distributionCommitment": { "$ref": "#/$defs/bytes32" }
+      }
+    },
+    "router": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["address", "extcodehash", "runtimeCodeHash", "supportsCanonicalVMInput", "supportsSignedVm"],
+      "properties": {
+        "address": { "$ref": "#/$defs/address" },
+        "extcodehash": { "$ref": "#/$defs/bytes32" },
+        "runtimeCodeHash": { "$ref": "#/$defs/bytes32" },
+        "supportsCanonicalVMInput": { "const": true },
+        "supportsSignedVm": { "const": true }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signer", "algorithm", "message", "signature"],
+      "properties": {
+        "signer": { "$ref": "#/$defs/address" },
+        "algorithm": { "const": "EIP-191" },
+        "message": { "$ref": "#/$defs/bytes32" },
+        "signature": { "type": "string", "pattern": "^0x[0-9a-fA-F]{130}$" }
+      }
+    }
+  }
+}

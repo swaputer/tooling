@@ -1,0 +1,59 @@
+{
+  "name": "@swaputer/cli",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Read-only CLI for verifying and decoding Swaputer SVM transactions.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swaputer/tooling.git",
+    "directory": "tooling/cli"
+  },
+  "homepage": "https://github.com/swaputer/tooling/tree/main/tooling/cli#readme",
+  "keywords": [
+    "swaputer",
+    "svm",
+    "cli",
+    "transaction",
+    "ethereum"
+  ],
+  "type": "module",
+  "bin": {
+    "swaputer": "./dist/src/cli.js",
+    "swaputer-inspect": "./dist/src/cli.js"
+  },
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "files": [
+    "dist/src",
+    "deployments",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "scripts": {
+    "check:deployments": "node scripts/check-deployments.mjs",
+    "build": "npm run check:deployments && tsc -p tsconfig.json",
+    "typecheck": "npm run check:deployments && tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node --test dist/test/*.test.js",
+    "audit": "npm audit"
+  },
+  "dependencies": {
+    "@noble/hashes": "1.7.1"
+  },
+  "peerDependencies": {
+    "@swaputer/receipt-codec": "0.1.0"
+  },
+  "devDependencies": {
+    "@swaputer/receipt-codec": "file:../receipt-codec",
+    "@types/node": "22.10.2",
+    "typescript": "5.7.3"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

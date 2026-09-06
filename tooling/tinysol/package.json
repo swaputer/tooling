@@ -1,0 +1,48 @@
+{
+  "name": "@swaputer/tinysol",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "tinysol": "./dist/src/cli.js"
+  },
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "scripts": {
+    "generate:isa": "node scripts/generate-isa.mjs",
+    "isa:check": "node scripts/generate-isa.mjs --check",
+    "references:generate": "node scripts/generate-reference-assembly.mjs",
+    "references:check": "node scripts/generate-reference-assembly.mjs --check",
+    "corpus:generate": "node scripts/generate-differential-corpus.mjs",
+    "corpus:check": "node scripts/generate-differential-corpus.mjs --check",
+    "compiler-identity:generate": "node scripts/generate-compiler-identity.mjs",
+    "compiler-identity:check": "node scripts/generate-compiler-identity.mjs --check",
+    "fixtures:generate": "node dist/scripts/generate-compiler-fixtures.js",
+    "fixtures:check": "node dist/scripts/generate-compiler-fixtures.js --check",
+    "examples:check": "node dist/scripts/check-examples.js",
+    "simulator:fixtures:generate": "node dist/scripts/generate-simulator-fixtures.js",
+    "simulator:fixtures:check": "node dist/scripts/generate-simulator-fixtures.js --check",
+    "programs:check": "node dist/scripts/check-application-programs.js",
+    "build": "npm run isa:check && npm run references:check && npm run corpus:check && npm run compiler-identity:check && tsc -p tsconfig.json && npm run programs:check",
+    "typecheck": "npm run isa:check && npm run references:check && npm run corpus:check && npm run compiler-identity:check && tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && npm run fixtures:check && npm run simulator:fixtures:check && node --test dist/test/*.test.js",
+    "audit": "npm audit"
+  },
+  "dependencies": {
+    "@noble/curves": "1.8.1",
+    "@noble/hashes": "1.7.1"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.2",
+    "typescript": "5.7.3"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

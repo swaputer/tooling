@@ -1,0 +1,16 @@
+{
+  "protocol": "SwapVM",
+  "version": "1.0",
+  "status": "frozen-for-implementation",
+  "specification": {
+    "file": "SwapVM-v1.0-frozen-spec.md",
+    "keccak256": "0x5afc0976e2aeba97a2f2fc3df131dcdfad74969ed6177416a7a1d23610da1c00",
+    "sha256": "8f5c980a5cd1221d48b18dc0c69de1e973c7ed8d2e1c80f4079512f0de080952"
+  },
+  "isa": {
+    "file": "SwapVM-ISA-v1.json",
+    "keccak256": "0x2f0059846af771cb9f77e74d5f728744a9b8dbe69313d146b8a5e7fdcbe7c118",
+    "sha256": "91a6acc0ccc846c4f652a224029eae9df08cb88a558ce98646ba48d25a836d3f"
+  },
+  "changePolicy": "Any byte-level change to the specification or ISA creates a new protocol version and a new manifest."
+}

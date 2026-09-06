@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "1",
+  "environment": "testnet",
+  "releaseStatus": {
+    "auditStatus": "unaudited",
+    "auditCandidateTag": "swaputer-v1.1-stage7c-rc2",
+    "auditCandidateCommit": "afa54c2e02e7e91430b14b6884faff5e3f5867d9",
+    "economicValue": "none",
+    "publicMainnetDeploymentAllowed": false
+  },
+  "chainId": 11155111,
+  "networkName": "DESIGNATED_ZERO_VALUE_TESTNET_TBD",
+  "poolManager": {
+    "address": "0x1111111111111111111111111111111111111111",
+    "expectedExtcodehash": "0x1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "factory": {
+    "address": "0x2222222222222222222222222222222222222222",
+    "kernelCreationCodeStore": {
+      "address": "0x3333333333333333333333333333333333333333",
+      "runtimeCodeHash": "0x3333333333333333333333333333333333333333333333333333333333333333",
+      "payloadHash": "0x0a9486d5dfa79bbe0eac0ee8748b013836d5a903924db1b62c313eee81ce1c33"
+    },
+    "hookCreationCodeStore": {
+      "address": "0x4444444444444444444444444444444444444444",
+      "runtimeCodeHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+      "payloadHash": "0xddcc7914b6e3a101b00ccce399fc7a2d0ccb4e2bc037b8baf1142560badc29b2"
+    },
+    "artifactHashes": {
+      "factoryCreationCode": "0xd2a2dceb1fb77f9a9f4838916cbaa68af147eac893d5533810023eaf080fce7d",
+      "factoryRuntime": "0x92d27f6a36bea8bb726910b76661db8dc0800366d61e4f301bb8ab464beca560",
+      "routerRuntime": "0xa0ff3c410d56a33b16ac7bd27f10d218beac287d6ba2b070542f98bfaeaf644d",
+      "gasTokenCreationCode": "0x5c8c737c0ba809cfa3f81d047278fc564626751149fe62c674a46b261a9587a9",
+      "gasTokenRuntime": "0xcaeb77868e084ce07ed0788b053310a4e56fb38cd68b2a3bd14e9c4b22a22f5d",
+      "kernelCreationCode": "0x0a9486d5dfa79bbe0eac0ee8748b013836d5a903924db1b62c313eee81ce1c33",
+      "kernelRuntime": "0xd9e41bd0b8eacd4f93d5975e08ab2b6405319181520bfb63cdf2039bd86ffca4",
+      "hookCreationCode": "0xddcc7914b6e3a101b00ccce399fc7a2d0ccb4e2bc037b8baf1142560badc29b2",
+      "hookRuntime": "0xc0d8bd2b1d816056aafb1bbd91d1e55f6b00357eeca54162165f806f44812508",
+      "worldDeployerCreationCode": "0x120c10dd3dab62ed70d2ca99c64b4413b09c92f9d30b3a37c89db50c5cbe80d7",
+      "worldDeployerRuntime": "0xd7798d34186fd40e7535dcbf9a1432e4e386d8a7838784e12bec73dea94916d4",
+      "referenceRegistryRuntime": "0x2946cb82853b48b67899d247ee1296a213c461af319c1d41db796326591235b6"
+    },
+    "initCodeHashes": {
+      "gasToken": "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "worldDeployer": "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "hook": "0xcccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  },
+  "vm": { "byteGasPrice": "1000000000000", "maxByteGasLimit": 1000000 },
+  "token": {
+    "initialSupply": "1000000000000000000000000000",
+    "initialHolder": "0x5555555555555555555555555555555555555555",
+    "distributionCommitment": "0x5555555555555555555555555555555555555555555555555555555555555555",
+    "decimals": 18
+  },
+  "pool": { "fee": 3000, "tickSpacing": 60, "initialSqrtPriceX96": "79228162514264337593543950336" },
+  "salts": {
+    "tokenSalt": "0x0101010101010101010101010101010101010101010101010101010101010101",
+    "bootstrapSalt": "0x0202020202020202020202020202020202020202020202020202020202020202",
+    "hookSalt": "0x0303030303030303030303030303030303030303030303030303030303030303"
+  },
+  "predicted": {
+    "worldDeployer": "0x6666666666666666666666666666666666666666",
+    "kernel": "0x7777777777777777777777777777777777777777",
+    "hook": "0x8888888888888888888888888888888888888044",
+    "token": "0x9999999999999999999999999999999999999999"
+  },
+  "liquidityPlan": {
+    "description": "Project-owned zero-value test liquidity only; exact amounts require authorization",
+    "maximumProjectToken": "100000000000000000000000",
+    "maximumProjectNativeWei": "1000000000000000000",
+    "thirdPartyFundsAllowed": false
+  },
+  "finality": { "confirmations": 24, "maximumReorgDepth": 128, "pollIntervalSeconds": 12 },
+  "rpcEnvironmentVariables": ["SWAPVM_TESTNET_RPC_PRIMARY", "SWAPVM_TESTNET_RPC_SECONDARY"],
+  "manifestPublisher": "MANIFEST_PUBLISHER_TBD",
+  "containsPlaceholders": true
+}

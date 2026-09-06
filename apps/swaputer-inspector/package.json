@@ -1,0 +1,30 @@
+{
+  "name": "@swaputer/inspector-extension",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm --prefix ../../tooling/receipt-codec run build && vite build && tsc -p tsconfig.content.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.content.json --noEmit",
+    "test": "vitest run",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "5.3.0",
+    "@noble/hashes": "1.7.1",
+    "@swaputer/receipt-codec": "file:../../tooling/receipt-codec",
+    "lucide-react": "1.35.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/chrome": "0.1.36",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.1.1",
+    "typescript": "7.0.2",
+    "vite": "8.2.2",
+    "vitest": "4.1.11"
+  }
+}

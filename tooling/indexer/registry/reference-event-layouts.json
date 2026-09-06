@@ -1,0 +1,111 @@
+{
+  "CPAMM-v1": {
+    "events": [
+      {
+        "fields": [
+          { "indexed": true, "name": "token0", "position": 1, "type": "account" },
+          { "indexed": true, "name": "token1", "position": 2, "type": "account" },
+          { "indexed": false, "name": "fee", "position": 0, "type": "uint256" }
+        ],
+        "signature": "PairCreated(bytes32,bytes32,uint256)"
+      },
+      {
+        "fields": [
+          { "indexed": true, "name": "actor", "position": 1, "type": "account" },
+          { "indexed": false, "name": "amount0", "position": 0, "type": "uint256" },
+          { "indexed": false, "name": "amount1", "position": 1, "type": "uint256" },
+          { "indexed": false, "name": "shares", "position": 2, "type": "uint256" }
+        ],
+        "signature": "LiquidityAdded(bytes32,uint256,uint256,uint256)"
+      },
+      {
+        "fields": [
+          { "indexed": true, "name": "actor", "position": 1, "type": "account" },
+          { "indexed": false, "name": "amount0", "position": 0, "type": "uint256" },
+          { "indexed": false, "name": "amount1", "position": 1, "type": "uint256" },
+          { "indexed": false, "name": "shares", "position": 2, "type": "uint256" }
+        ],
+        "signature": "LiquidityRemoved(bytes32,uint256,uint256,uint256)"
+      },
+      {
+        "fields": [
+          { "indexed": true, "name": "actor", "position": 1, "type": "account" },
+          { "indexed": true, "name": "tokenIn", "position": 2, "type": "account" },
+          { "indexed": false, "name": "amountIn", "position": 0, "type": "uint256" },
+          { "indexed": false, "name": "amountOut", "position": 1, "type": "uint256" }
+        ],
+        "signature": "Swap(bytes32,bytes32,uint256,uint256)"
+      }
+    ]
+  },
+  "SRC1155-v1": {
+    "events": [
+      {
+        "fields": [
+          { "indexed": true, "name": "operator", "position": 1, "type": "account" },
+          { "indexed": true, "name": "from", "position": 2, "type": "account" },
+          { "indexed": true, "name": "to", "position": 3, "type": "account" },
+          { "indexed": false, "name": "id", "position": 0, "type": "uint256" },
+          { "indexed": false, "name": "amount", "position": 1, "type": "uint256" }
+        ],
+        "signature": "TransferSingle(bytes32,bytes32,bytes32,uint256,uint256)"
+      },
+      {
+        "fields": [
+          { "indexed": true, "name": "owner", "position": 1, "type": "account" },
+          { "indexed": true, "name": "operator", "position": 2, "type": "account" },
+          { "indexed": false, "name": "approved", "position": 0, "type": "bool" }
+        ],
+        "signature": "ApprovalForAll(bytes32,bytes32,bool)"
+      }
+    ]
+  },
+  "SRC20-v1": {
+    "events": [
+      {
+        "fields": [
+          { "indexed": true, "name": "from", "position": 1, "type": "account" },
+          { "indexed": true, "name": "to", "position": 2, "type": "account" },
+          { "indexed": false, "name": "amount", "position": 0, "type": "uint256" }
+        ],
+        "signature": "Transfer(bytes32,bytes32,uint256)"
+      },
+      {
+        "fields": [
+          { "indexed": true, "name": "owner", "position": 1, "type": "account" },
+          { "indexed": true, "name": "spender", "position": 2, "type": "account" },
+          { "indexed": false, "name": "amount", "position": 0, "type": "uint256" }
+        ],
+        "signature": "Approval(bytes32,bytes32,uint256)"
+      }
+    ]
+  },
+  "SRC721-v1": {
+    "events": [
+      {
+        "fields": [
+          { "indexed": true, "name": "from", "position": 1, "type": "account" },
+          { "indexed": true, "name": "to", "position": 2, "type": "account" },
+          { "indexed": false, "name": "tokenId", "position": 0, "type": "uint256" }
+        ],
+        "signature": "Transfer(bytes32,bytes32,uint256)"
+      },
+      {
+        "fields": [
+          { "indexed": true, "name": "owner", "position": 1, "type": "account" },
+          { "indexed": true, "name": "operator", "position": 2, "type": "account" },
+          { "indexed": false, "name": "tokenId", "position": 0, "type": "uint256" }
+        ],
+        "signature": "Approval(bytes32,bytes32,uint256)"
+      },
+      {
+        "fields": [
+          { "indexed": true, "name": "owner", "position": 1, "type": "account" },
+          { "indexed": true, "name": "operator", "position": 2, "type": "account" },
+          { "indexed": false, "name": "approved", "position": 0, "type": "bool" }
+        ],
+        "signature": "ApprovalForAll(bytes32,bytes32,bool)"
+      }
+    ]
+  }
+}

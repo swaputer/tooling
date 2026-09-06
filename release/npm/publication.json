@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "swaputer-npm-publication/1",
+  "registry": "https://registry.npmjs.org",
+  "scope": "@swaputer",
+  "license": "MIT",
+  "status": "unpublished",
+  "unpublishedAt": "2026-09-06T08:28:38.155Z",
+  "registryVerification": "all exact versions returned HTTP 404 after withdrawal",
+  "sourceCommit": "e2d4a6a2c25255cb0cab03f767df5596b3cd440c",
+  "publicationBoundary": "three-packages-only",
+  "excludedRepositoryRoots": [
+    "apps",
+    "deployments",
+    "infra",
+    "script",
+    "services",
+    "src",
+    "test"
+  ],
+  "packages": [
+    {
+      "name": "@swaputer/receipt-codec",
+      "version": "0.1.0",
+      "formerUrl": "https://www.npmjs.com/package/@swaputer/receipt-codec/v/0.1.0",
+      "publishedAt": "2026-09-06T08:19:12.703Z",
+      "unpublishedAt": "2026-09-06T08:28:38.155Z",
+      "status": "unpublished",
+      "tarballSha256": "691dd4891d02ee55bd1d6fd781826f1b782bdc7b458285456b303eca305f93f9",
+      "registryShasum": "21fba0170fdb3866b3d0d9753254124b057bdf5b",
+      "registryIntegrity": "sha512-FOaNKzl8OZ4V9C3ssqJGZt9Hpz2V8gW5Whvclxrph8LVEa/tfsHmuskqvy+bdG7ScdtwRl1+B4KTXmRmvKk3og==",
+      "fileCount": 27
+    },
+    {
+      "name": "@swaputer/tinysol",
+      "version": "0.3.0",
+      "formerUrl": "https://www.npmjs.com/package/@swaputer/tinysol/v/0.3.0",
+      "publishedAt": "2026-09-06T08:19:25.138Z",
+      "unpublishedAt": "2026-09-06T08:28:03.508Z",
+      "status": "unpublished",
+      "tarballSha256": "67df7760d4fa5b60365b16793b4216126eaa0a53ebf205646244d889a9290b9e",
+      "registryShasum": "ce0e1d031120aa1a494722bc436a6932d9b3024f",
+      "registryIntegrity": "sha512-ppBbOmZJg2va1RcZdppnEwGCRWK0QuRD4h38iNqfDQAtlg7mu/EHMjE4R2PWg6ivNHKUdUJK+GMMhtg4OHYoeA==",
+      "fileCount": 109
+    },
+    {
+      "name": "@swaputer/cli",
+      "version": "0.1.0",
+      "formerUrl": "https://www.npmjs.com/package/@swaputer/cli/v/0.1.0",
+      "publishedAt": "2026-09-06T08:19:37.955Z",
+      "unpublishedAt": "2026-09-06T08:27:32.806Z",
+      "status": "unpublished",
+      "tarballSha256": "3df82f49b19a8da8e5505722ed87772ab60a1f3349e0acfa69f03bb9cb20a7f1",
+      "registryShasum": "e38e45a5c522b14c0652b9e48c0e8ba0e96bdfd5",
+      "registryIntegrity": "sha512-iL7S+CJ8GI0UC4jQi9PfB5pt8I0LT3nIxp6PkcFYVHfzpmqbbIo1JNH5ggB6pcgYVouWxR3ZtxDDJTYvY3x+Tw==",
+      "fileCount": 36
+    }
+  ]
+}

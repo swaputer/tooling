@@ -1,0 +1,29 @@
+{
+  "protocol": "SwapVM",
+  "version": "1.2",
+  "status": "frozen-release-candidate",
+  "candidateTag": "swaputer-v1.2-stage7m-rc3",
+  "mainnetAuthorized": false,
+  "securityCorrection": "Inherits v1.1 explicit signed actor binding; v1.1 action signatures are intentionally incompatible.",
+  "extension": "Adds read-only EVM transaction context opcodes for router, authorized executor and recipient binding.",
+  "specification": {
+    "file": "SwapVM-v1.2-executor-context-spec.md",
+    "keccak256": "0x5ec3c2d6dc2bbe43f41fb6b825fdce667784c282ef84d82dca227ef39d977039",
+    "sha256": "52e36b3b7c056868e8f0237f65e8aa6f70f70c20fbe6d85fc2c20709454b26dc"
+  },
+  "isa": {
+    "file": "SwapVM-ISA-v2.json",
+    "keccak256": "0x5958f1a3baf744e5ed92f096a964ee14779db2e32e70a2982c53080eb3cd92c2",
+    "sha256": "e1c194b49a0275ce052758d18c834b0a6c8fedbb3932b0cf378b725c992ed389"
+  },
+  "compatibility": {
+    "vmVersion": "2",
+    "eip712DomainVersion": "1.2",
+    "vmActionTypehash": "unchanged from v1.1",
+    "receiptCodec": "unchanged from v1.0/v1.1",
+    "programPackages": "unchanged from v1.0/v1.1",
+    "signedActions": "incompatible with v1.1 because the EIP-712 domain version changes",
+    "bytecode": "v1 bytecode remains valid unless it relied on 0xba, 0xbb or 0xbc being invalid"
+  },
+  "changePolicy": "Any byte-level change to the v1.2 specification or ISA requires recalculating this manifest before tooling generation."
+}

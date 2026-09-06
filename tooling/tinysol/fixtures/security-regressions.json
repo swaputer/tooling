@@ -1,0 +1,16 @@
+{
+  "format": "SwapVMSecurityRegressionIndex",
+  "version": 1,
+  "cases": [
+    {"id": "out-of-byte-gas", "threat": "shared-meter exhaustion", "expected": "atomic revert"},
+    {"id": "static-violation", "threat": "static-context write", "expected": "atomic revert"},
+    {"id": "nested-child-revert", "threat": "child journal escape", "expected": "no state or records"},
+    {"id": "static-descendant-write", "threat": "descendant static bypass", "expected": "atomic revert"},
+    {"id": "internal-create", "threat": "CREATE identity and journal", "expected": "matching deployment and record order"},
+    {"id": "nested-call", "threat": "mutable nested call", "expected": "matching storage journal"},
+    {"id": "nested-staticcall", "threat": "read-only nested call", "expected": "no storage journal"},
+    {"id": "event-log", "threat": "virtual event ordering", "expected": "matching encoded records"},
+    {"id": "control-revert", "threat": "write-before-revert", "expected": "no committed journal"},
+    {"id": "fixed-seed-00", "threat": "malformed/opcode boundary corpus", "expected": "byte-identical result"}
+  ]
+}

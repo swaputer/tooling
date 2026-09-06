@@ -1,0 +1,23 @@
+{
+  "protocol": "SwapVM",
+  "version": "1.1",
+  "status": "frozen-for-implementation",
+  "securityCorrection": "Explicit signed actor binding; v1.0 action signatures are intentionally incompatible.",
+  "specification": {
+    "file": "SwapVM-v1.1-frozen-spec.md",
+    "keccak256": "0x14cc901e0e64de666e9230a331bd40d52e3a4fd07d64c8d5f4cb01a63e5a3339",
+    "sha256": "2a138a4aa38615b55aff12d84aa9269a7417b23ed7c46314ac82a25b9322c73a"
+  },
+  "isa": {
+    "file": "SwapVM-ISA-v1.json",
+    "keccak256": "0x2f0059846af771cb9f77e74d5f728744a9b8dbe69313d146b8a5e7fdcbe7c118",
+    "sha256": "91a6acc0ccc846c4f652a224029eae9df08cb88a558ce98646ba48d25a836d3f"
+  },
+  "compatibility": {
+    "vmIsa": "unchanged from v1.0",
+    "receiptCodec": "unchanged from v1.0",
+    "programPackages": "unchanged from v1.0",
+    "signedActions": "incompatible with v1.0"
+  },
+  "changePolicy": "Any byte-level change to the specification or ISA creates a new protocol version and a new manifest."
+}

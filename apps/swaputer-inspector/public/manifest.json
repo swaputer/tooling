@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Swaputer Inspector",
+  "version": "0.1.1",
+  "description": "Recognize and strictly decode verified Swaputer executions on Base explorers.",
+  "minimum_chrome_version": "116",
+  "permissions": ["sidePanel", "storage"],
+  "host_permissions": [
+    "https://sepolia.base.org/*",
+    "https://base-sepolia-rpc.publicnode.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://sepolia.basescan.org/tx/*",
+        "https://base-sepolia.blockscout.com/tx/*",
+        "https://sepolia-explorer.base.org/tx/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "Open Swaputer Inspector"
+  }
+}
