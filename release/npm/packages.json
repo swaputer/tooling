@@ -1,13 +1,13 @@
 {
   "schemaVersion": "swaputer-npm-release/1",
-  "status": "published",
+  "status": "prepared-not-published",
   "registry": "https://registry.npmjs.org",
   "license": "MIT",
   "packages": [
     {
       "sourceDirectory": "tooling/receipt-codec",
       "name": "@swaputer-labs/receipt-codec",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "description": "Strict TypeScript codec for Swaputer VMReceiptV1 payloads.",
       "keywords": ["swaputer", "svm", "receipt", "codec", "ethereum"],
       "include": ["dist/src", "README.md"],
@@ -16,7 +16,7 @@
     {
       "sourceDirectory": "tooling/tinysol",
       "name": "@swaputer-labs/tinysol",
-      "version": "0.3.1",
+      "version": "0.3.2",
       "description": "Compiler, assembler, simulator and CLI for the Swaputer TinySol language.",
       "keywords": ["swaputer", "svm", "tinysol", "compiler", "simulator"],
       "include": ["dist/src", "examples", "README.md"],
@@ -28,13 +28,13 @@
     {
       "sourceDirectory": "tooling/cli",
       "name": "@swaputer-labs/cli",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "description": "Read-only CLI for verifying and decoding Swaputer SVM transactions.",
       "keywords": ["swaputer", "svm", "cli", "transaction", "ethereum"],
       "include": ["dist/src", "deployments", "README.md"],
       "dependencies": {
         "@noble/hashes": "1.7.1",
-        "@swaputer-labs/receipt-codec": "0.1.1"
+        "@swaputer-labs/receipt-codec": "0.1.2"
       }
     }
   ]
