@@ -5,10 +5,10 @@ compiler and simulator, the strict receipt codec, the read-only transaction CLI,
 the inspector extension, deployment-manifest helpers, and reference integration
 tools.
 
-The npm release path is paused. Every source package remains `private: true`;
-running package preparation does not publish anything. The only prepared public
-package identities are `@swaputer-labs/receipt-codec@0.1.1`,
-`@swaputer-labs/tinysol@0.3.1`, and `@swaputer-labs/cli@0.1.1`; the former
+The npm packages are publicly available while every source package remains
+`private: true`; running package preparation alone does not publish anything.
+The current public package identities are `@swaputer-labs/receipt-codec@0.1.2`,
+`@swaputer-labs/tinysol@0.3.2`, and `@swaputer-labs/cli@0.1.2`; the former
 `@swaputer/*` publications remain only in the immutable withdrawal record.
 
 ## Source layout

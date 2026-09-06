@@ -1,6 +1,6 @@
 {
   "schemaVersion": "swaputer-npm-release/1",
-  "status": "prepared-not-published",
+  "status": "published",
   "registry": "https://registry.npmjs.org",
   "license": "MIT",
   "packages": [

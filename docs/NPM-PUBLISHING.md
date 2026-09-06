@@ -3,14 +3,14 @@
 Swaputer publishes three public npm packages while keeping every source workspace
 `private: true`:
 
-- `@swaputer-labs/receipt-codec@0.1.1` — strict `VMReceiptV1` encoding and decoding.
-- `@swaputer-labs/tinysol@0.3.1` — TinySol compiler, assembler, simulator and offline CLI.
-- `@swaputer-labs/cli@0.1.1` — read-only on-chain SVM transaction inspection and receipt decoding.
+- `@swaputer-labs/receipt-codec@0.1.2` — strict `VMReceiptV1` encoding and decoding.
+- `@swaputer-labs/tinysol@0.3.2` — TinySol compiler, assembler, simulator and offline CLI.
+- `@swaputer-labs/cli@0.1.2` — read-only on-chain SVM transaction inspection and receipt decoding.
 
-`0.3.1` is the TinySol npm package version. The assembler/build-manifest
+`0.3.2` is the TinySol npm package version. The assembler/build-manifest
 toolchain identity is `@swaputer-labs/tinysol@0.1.0`, preserving its independent
-manifest version while changing only the scope name. The compiler semantic
-version remains `0.2.0-experimental` because this rename does not change
+manifest version. The compiler semantic version remains `0.2.0-experimental`
+because this patch changes public documentation and package metadata, not the
 language or code-generation semantics. The reproducibility source fingerprint
 and dependency-lock hash are regenerated for the new package metadata while
 compiled program bytecode hashes remain unchanged.
@@ -32,9 +32,9 @@ The `@swaputer-labs` packages were published on September 6, 2026. Exact
 registry timestamps, integrity hashes, source commit and the package-only
 boundary are recorded in `release/npm/swaputer-labs-publication.json`:
 
-- `@swaputer-labs/receipt-codec@0.1.1`
-- `@swaputer-labs/tinysol@0.3.1`
-- `@swaputer-labs/cli@0.1.1`
+- `@swaputer-labs/receipt-codec@0.1.2`
+- `@swaputer-labs/tinysol@0.3.2`
+- `@swaputer-labs/cli@0.1.2`
 
 The source package manifests remain `private: true`; the public identities exist
 only in the allowlisted generated tarballs.
@@ -57,9 +57,9 @@ unpublished tarballs plus `artifacts/npm/npm-package-evidence.json`.
 Before any publish, inspect the evidence and each tarball:
 
 ```sh
-tar -tzf ./artifacts/npm/swaputer-labs-receipt-codec-0.1.1.tgz
-tar -tzf ./artifacts/npm/swaputer-labs-tinysol-0.3.1.tgz
-tar -tzf ./artifacts/npm/swaputer-labs-cli-0.1.1.tgz
+tar -tzf ./artifacts/npm/swaputer-labs-receipt-codec-0.1.2.tgz
+tar -tzf ./artifacts/npm/swaputer-labs-tinysol-0.3.2.tgz
+tar -tzf ./artifacts/npm/swaputer-labs-cli-0.1.2.tgz
 ```
 
 Do not store an npm token in this repository or any `.env.local` file. Prefer an
@@ -80,10 +80,9 @@ boundary are recorded in `release/npm/publication.json`.
 - `@swaputer/cli@0.1.0` — withdrawn
 
 npm does not permit these exact `name@version` combinations to be reused. The
-prepared packages therefore use the new `@swaputer-labs` scope and versions
-`0.1.1`, `0.3.1`, and `0.1.1`; the CLI pins the prepared receipt codec exactly.
-The historical `release/npm/publication.json` record is not rewritten for the
-new scope. npm also blocks republishing a withdrawn package name for 24 hours.
+initial replacement packages therefore used the new `@swaputer-labs` scope and
+versions `0.1.1`, `0.3.1`, and `0.1.1`. The historical
+`release/npm/publication.json` record is not rewritten for the new scope.
 
 ## Publication order
 
@@ -94,9 +93,9 @@ Publish a newly versioned release in dependency order. Never reuse the withdrawn
 tarball versions shown above:
 
 ```sh
-npm publish ./artifacts/npm/swaputer-labs-receipt-codec-0.1.1.tgz --access public
-npm publish ./artifacts/npm/swaputer-labs-tinysol-0.3.1.tgz --access public
-npm publish ./artifacts/npm/swaputer-labs-cli-0.1.1.tgz --access public
+npm publish ./artifacts/npm/swaputer-labs-receipt-codec-0.1.2.tgz --access public
+npm publish ./artifacts/npm/swaputer-labs-tinysol-0.3.2.tgz --access public
+npm publish ./artifacts/npm/swaputer-labs-cli-0.1.2.tgz --access public
 ```
 
 These commands are release-operator instructions; package preparation and CI never publish.
