@@ -282,7 +282,7 @@ async function main() {
       packages
     };
     await writeFile(join(options.output, "npm-package-evidence.json"), `${JSON.stringify(evidence, null, 2)}\n`, { mode: 0o644 });
-    process.stdout.write(`Prepared ${packages.length} unpublished npm tarballs in ${options.output}\n`);
+    process.stdout.write(`Prepared ${packages.length} publication-ready npm tarballs in ${options.output}\n`);
     for (const package_ of packages) process.stdout.write(`${package_.name}@${package_.version} ${package_.tarball} sha256=${package_.sha256}\n`);
   } finally {
     await rm(stagingRoot, { recursive: true, force: true });

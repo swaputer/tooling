@@ -1,6 +1,6 @@
 # npm publishing runbook
 
-Swaputer can prepare three public npm packages while keeping every source workspace
+Swaputer publishes three public npm packages while keeping every source workspace
 `private: true`:
 
 - `@swaputer-labs/receipt-codec@0.1.1` — strict `VMReceiptV1` encoding and decoding.
@@ -25,6 +25,19 @@ strict publication boundary: only the allowlisted files inside the three
 generated package archives are uploaded to npm. Contracts, applications,
 services, deployment sources and operational tooling are never copied into the
 npm staging directories.
+
+## Current publication
+
+The `@swaputer-labs` packages were published on September 6, 2026. Exact
+registry timestamps, integrity hashes, source commit and the package-only
+boundary are recorded in `release/npm/swaputer-labs-publication.json`:
+
+- `@swaputer-labs/receipt-codec@0.1.1`
+- `@swaputer-labs/tinysol@0.3.1`
+- `@swaputer-labs/cli@0.1.1`
+
+The source package manifests remain `private: true`; the public identities exist
+only in the allowlisted generated tarballs.
 
 ## Prepare and inspect
 
@@ -87,8 +100,7 @@ npm publish ./artifacts/npm/swaputer-labs-cli-0.1.1.tgz --access public
 ```
 
 These commands are release-operator instructions; package preparation and CI never publish.
-For the first release, use npm staged publishing when available or publish from a
+For a future release, use npm staged publishing when available or publish from a
 protected environment, verify package contents and provenance on npm, then test
-installation in a fresh empty directory. Only after the registry versions are
-verified should public documentation change from source/local setup to npm
-installation commands.
+installation in a fresh empty directory. Never attempt to republish the versions
+recorded above; prepare new versions and evidence first.

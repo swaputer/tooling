@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "swaputer-npm-publication/2",
+  "registry": "https://registry.npmjs.org",
+  "scope": "@swaputer-labs",
+  "license": "MIT",
+  "status": "published",
+  "verifiedAt": "2026-09-06T11:31:46Z",
+  "sourceCommit": "83b97054239bb2ef9abaf30b63a36024d232c69a",
+  "publicationBoundary": "three-allowlisted-packages-only",
+  "credentialsPersisted": false,
+  "excludedWorkspaceDirectories": [
+    "apps",
+    "audit",
+    "config",
+    "deployments",
+    "docs",
+    "reference",
+    "release",
+    "script",
+    "tooling/deployment-manifest",
+    "tooling/indexer"
+  ],
+  "packages": [
+    {
+      "name": "@swaputer-labs/receipt-codec",
+      "version": "0.1.1",
+      "url": "https://www.npmjs.com/package/@swaputer-labs/receipt-codec/v/0.1.1",
+      "publishedAt": "2026-09-06T11:28:33.050Z",
+      "status": "published",
+      "tarballSha256": "983c0503c78e6dde8901b33cd840c5ebcdb27698ddfd8bf63660c25276020d70",
+      "registryShasum": "3f95fdf860bfc552692690d5b4ed655a22403aa9",
+      "registryIntegrity": "sha512-GNg740kjuf8ktqdMcrG3v8IHhdOjAHnAjUdt2MBV9jg1fvLBpnRtA50EfXeJVFD8PeZ+ONP9CFlKY/4B4NnxTw==",
+      "fileCount": 27,
+      "unpackedSize": 49526
+    },
+    {
+      "name": "@swaputer-labs/tinysol",
+      "version": "0.3.1",
+      "url": "https://www.npmjs.com/package/@swaputer-labs/tinysol/v/0.3.1",
+      "publishedAt": "2026-09-06T11:30:08.637Z",
+      "status": "published",
+      "tarballSha256": "e648f0ee1183e667ee6bc9cc8e59a70814373b45058324a2460ccd3dab716895",
+      "registryShasum": "fc0b6ae7620dc30b80f781726261cbc71f37ab8e",
+      "registryIntegrity": "sha512-9qKws2Vu/38UuyBKN4uWiM+a5Ien4/EeB+XvkwMQgucspT8tov/CUYfVyP+MdbOfWwqgNXE/OccdydrgNOYDJw==",
+      "fileCount": 109,
+      "unpackedSize": 562201
+    },
+    {
+      "name": "@swaputer-labs/cli",
+      "version": "0.1.1",
+      "url": "https://www.npmjs.com/package/@swaputer-labs/cli/v/0.1.1",
+      "publishedAt": "2026-09-06T11:30:28.512Z",
+      "status": "published",
+      "tarballSha256": "dc9dc38ce3e76bbfc7e272c5c014b8e31e7e22722ecb533e0ef77b1828c181ad",
+      "registryShasum": "3152d2d6e6ca592191b1e494c93bc6bf8b560a99",
+      "registryIntegrity": "sha512-xQe8HKLQeWcpmXT47jN/DDkp87/yiai4Qoa1KgTlO5Iw8Mo/Po/wrnOwspypZ38mFtOYXinI8FPG713Z3ZDqdg==",
+      "fileCount": 36,
+      "unpackedSize": 56491
+    }
+  ]
+}
