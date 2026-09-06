@@ -50,29 +50,16 @@ Block: 46449798
 Execution 1: height=1526 actor=0x... target=0x... bytes=191 burned=191000000000000
 ```
 
-`--json` serializes bigint fields as decimal strings so the output can be safely
-consumed by other tools.
+`--json` serializes bigint fields as decimal strings for scripts and other
+automated consumers.
 
-The packaged Base Sepolia descriptor is generated from and checked against
-`deployments/active/base-sepolia.json`. A future Base Mainnet descriptor must be
-added only after the mainnet release manifest is frozen; this package does not
-create or authorize a mainnet configuration.
+The package currently includes a verified Base Sepolia release descriptor. It
+does not contain a Base Mainnet configuration.
 
 Exit codes are stable: `2` for input/usage, `3` for RPC configuration or
 transport, `4` for a missing transaction, `5` for a reverted transaction, `6`
 for a non-Swaputer transaction and `7` for verification failures.
 
-Development commands:
-
-```sh
-npm ci
-npm run build
-npm run typecheck
-npm test
-npm audit
-```
-
 ## License
 
-The files distributed in this npm package are available under the MIT License.
-Only this package's allowlisted files are included in its npm archive.
+MIT

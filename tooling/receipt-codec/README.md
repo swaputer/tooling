@@ -1,6 +1,8 @@
 # `@swaputer-labs/receipt-codec`
 
-Dependency-free runtime codec for the frozen SwapVM `VMReceiptV1` payload. Node and `@noble/hashes` are development-only dependencies used for tests, Solidity constant generation checks and freeze-manifest verification; the code under `src/` imports no third-party package.
+Dependency-free runtime codec for SwapVM `VMReceiptV1` payloads. Decode and
+validate receipts from raw bytes or hex, or encode typed receipt data back to
+its canonical binary form.
 
 ## Installation
 
@@ -50,19 +52,9 @@ encodeVMReceiptHex(receipt: VMReceiptV1Input | VMReceiptV1): `0x${string}`
 
 `decodeVMReceipt` returns deeply frozen records only after the complete payload and mandatory final Kernel summary pass validation. Unknown application records remain raw and lossless. Known Kernel records include typed `decoded` fields. A failure throws `VMReceiptError` with a stable `ReceiptErrorCode`, optional byte offset and structured details; it never returns partial records.
 
-Run locally:
-
-```sh
-npm ci
-npm run build
-npm run typecheck
-npm test
-npm run check:manifests
-```
-
-See the [fixture documentation](https://github.com/swaputer/tooling/blob/main/tooling/receipt-codec/fixtures/README.md) for deterministic Foundry fixture regeneration.
+The runtime has no third-party dependencies and performs no network or wallet
+operations.
 
 ## License
 
-The files distributed in this npm package are available under the MIT License.
-Only this package's allowlisted files are included in its npm archive.
+MIT
