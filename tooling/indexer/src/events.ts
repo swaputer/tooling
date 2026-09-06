@@ -1,4 +1,4 @@
-import { decodeVMReceipt, hexToBytes, type Bytes32, type Hex } from "@swaputer/receipt-codec";
+import { decodeVMReceipt, hexToBytes, type Bytes32, type Hex } from "@swaputer-labs/receipt-codec";
 import { keccak_256 } from "@noble/hashes/sha3";
 
 import { IndexerError, IndexerErrorCode } from "./errors.js";

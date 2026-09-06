@@ -1,4 +1,4 @@
-import type { Bytes32, Hex } from "@swaputer/receipt-codec";
+import type { Bytes32, Hex } from "@swaputer-labs/receipt-codec";
 
 import type { SqliteDatabase } from "./database.js";
 import {

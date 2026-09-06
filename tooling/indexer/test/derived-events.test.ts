@@ -8,7 +8,7 @@ import {
   type Bytes32,
   type Hex,
   type VMRecordInput
-} from "@swaputer/receipt-codec";
+} from "@swaputer-labs/receipt-codec";
 
 import { migrate, openIndexerDatabase } from "../src/database.js";
 import { listDecodedEvents, rebuildDecodedEvents } from "../src/derived-events.js";

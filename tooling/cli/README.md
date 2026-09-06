@@ -1,4 +1,4 @@
-# `@swaputer/cli`
+# `@swaputer-labs/cli`
 
 Read-only command-line verification for Swaputer SVM transactions. The CLI
 fetches an Ethereum receipt through an explicitly named RPC environment
@@ -12,14 +12,14 @@ as command-line arguments, printed in output or included in structured errors.
 ## Installation
 
 ```sh
-npm install --global @swaputer/cli
+npm install --global @swaputer-labs/cli
 swaputer --help
 ```
 
 It can also be run without a global installation:
 
 ```sh
-npx @swaputer/cli --help
+npx @swaputer-labs/cli --help
 ```
 
 Requires Node.js 22 or newer.

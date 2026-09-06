@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, it } from "node:test";
 
-import { decodeVMReceipt, encodeVMReceiptHex, type Hex, type VMRecordInput } from "@swaputer/receipt-codec";
+import { decodeVMReceipt, encodeVMReceiptHex, type Hex, type VMRecordInput } from "@swaputer-labs/receipt-codec";
 import { getStatuses, listDeployments, listExecutions, listRecords, migrate, openIndexerDatabase } from "../src/database.js";
 import { IndexerError, IndexerErrorCode } from "../src/errors.js";
 import { SwapVMIndexer } from "../src/indexer.js";

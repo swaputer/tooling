@@ -6,7 +6,10 @@ the inspector extension, deployment-manifest helpers, and reference integration
 tools.
 
 The npm release path is paused. Every source package remains `private: true`;
-running package preparation does not publish anything.
+running package preparation does not publish anything. The only prepared public
+package identities are `@swaputer-labs/receipt-codec@0.1.1`,
+`@swaputer-labs/tinysol@0.3.1`, and `@swaputer-labs/cli@0.1.1`; the former
+`@swaputer/*` publications remain only in the immutable withdrawal record.
 
 ## Source layout
 

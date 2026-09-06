@@ -5,7 +5,7 @@ import { bytesToHex, normalizeBytes32, type Bytes32 } from "./bytes.js";
 import { ISA_FILE_KECCAK, ISA_FILE_SHA256, ISA_VERSION } from "./isa.js";
 import { encodeProgramPackage, programPackageCodeHash, type ProgramPackageV1 } from "./package.js";
 
-export const TOOLCHAIN_NAME = "@swaputer/tinysol" as const;
+export const TOOLCHAIN_NAME = "@swaputer-labs/tinysol" as const;
 export const TOOLCHAIN_VERSION = "0.1.0" as const;
 export const BUILD_MANIFEST_FORMAT = "SwapVMToolchainManifest" as const;
 export const BUILD_MANIFEST_VERSION = 1 as const;

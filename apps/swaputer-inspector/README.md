@@ -17,7 +17,7 @@ showing the verified label, the extension independently checks:
 - exact `Events(bytes32,uint64,bytes)` topic and three-topic shape;
 - the configured World ID and canonical indexed `uint64` height;
 - canonical outer ABI encoding; and
-- strict `VMReceiptV1` decoding through `@swaputer/receipt-codec`.
+- strict `VMReceiptV1` decoding through `@swaputer-labs/receipt-codec`.
 
 It requests no wallet, account, signing, private-key, or transaction-writing
 permission. It does not treat explorer-rendered content as trusted data.

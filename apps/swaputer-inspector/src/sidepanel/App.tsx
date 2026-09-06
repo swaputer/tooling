@@ -5,7 +5,7 @@ import {
   Search
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
-import type { VMRecord } from "@swaputer/receipt-codec";
+import type { VMRecord } from "@swaputer-labs/receipt-codec";
 import { formatInteger, formatToken, recordName, shorten } from "../lib/format";
 import { inspectTransaction, isInspectionError } from "../lib/inspect";
 import { InspectionErrorCode, type InspectionResult, type InspectorSelection } from "../lib/types";

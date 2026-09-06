@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@noble/hashes": "1.7.1",
-    "@swaputer/receipt-codec": "file:../receipt-codec",
+    "@swaputer-labs/receipt-codec": "file:../receipt-codec",
     "better-sqlite3": "13.0.3"
   },
   "devDependencies": {

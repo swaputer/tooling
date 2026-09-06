@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-import { decodeVMReceipt, isVMReceiptError, type Hex as ReceiptHex } from "@swaputer/receipt-codec";
+import { decodeVMReceipt, isVMReceiptError, type Hex as ReceiptHex } from "@swaputer-labs/receipt-codec";
 import { loadDeployment } from "./deployment.js";
 import { InspectionError, InspectionErrorCode, inspectionExitCode, isInspectionError } from "./errors.js";
 import { inspectTransaction } from "./inspect.js";
 import { jsonStringify } from "./json.js";
 import { rpcUrlFromEnvironment } from "./rpc.js";
 
-const VERSION = "0.1.0";
+const VERSION = "0.1.1";
 const USAGE = `Usage:
   swaputer inspect <transaction-hash> --rpc-env <ENV_NAME> [--network base-sepolia] [--json]
   swaputer decode-receipt <0x-payload> [--json]

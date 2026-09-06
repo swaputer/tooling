@@ -1,4 +1,4 @@
-import type { VMReceiptV1 } from "@swaputer/receipt-codec";
+import type { VMReceiptV1 } from "@swaputer-labs/receipt-codec";
 
 export type Hex = `0x${string}`;
 

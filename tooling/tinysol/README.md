@@ -2,23 +2,23 @@
 
 This Node.js workspace contains the complete Stage 6D toolchain plus the local v1.2 executor-context extension: ISA/package tooling, the experimental TinySol v1 compiler, a deterministic local MiniVM and concrete-path byte-fee estimator. High-level source is lowered to deterministic `.svasm`; the assembler remains the only byte encoder. Simulation consumes explicit snapshots and never calls RPC or Solidity. The source workspace remains private to prevent accidental publication; the repository's controlled npm release process generates the reviewed public package.
 
-The compiler library is also consumed by the in-browser TinySol Studio in
-`apps/mint-ui`, whose build supplies the small Node compatibility layer needed
-for hashing and UTF-8 byte lengths.
+The compiler library is also consumed by the in-browser TinySol Studio in the
+`swaputer/explorer` repository (`apps/mint-ui`), whose build supplies the small
+Node compatibility layer needed for hashing and UTF-8 byte lengths.
 
 ## Installation
 
 Use the library from an ES module:
 
 ```sh
-npm install @swaputer/tinysol
+npm install @swaputer-labs/tinysol
 ```
 
 Or run/install the offline CLI:
 
 ```sh
-npx @swaputer/tinysol --help
-npm install --global @swaputer/tinysol
+npx @swaputer-labs/tinysol --help
+npm install --global @swaputer-labs/tinysol
 tinysol --help
 ```
 
@@ -28,7 +28,7 @@ endpoint or wallet.
 ## Library example
 
 ```ts
-import { compileTinySol } from "@swaputer/tinysol";
+import { compileTinySol } from "@swaputer-labs/tinysol";
 
 const source = `
 contract Counter {

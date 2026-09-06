@@ -1,4 +1,4 @@
-import type { Bytes32, Hex, VMReceiptV1 } from "@swaputer/receipt-codec";
+import type { Bytes32, Hex, VMReceiptV1 } from "@swaputer-labs/receipt-codec";
 
 export type { Bytes32, Hex, VMReceiptV1 };
 export type Address = `0x${string}`;

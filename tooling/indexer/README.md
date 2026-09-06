@@ -1,6 +1,6 @@
 # `@swaputer/indexer`
 
-Reorg-safe reference indexer for the current Swaputer `Events`. It scans only configured Kernel addresses and the exact `Events(bytes32,uint64,bytes)` topic, delegates receipt decoding to `@swaputer/receipt-codec`, and stores canonical plus orphaned raw history in SQLite. Stage 6C adds code-hash-bound verified and declared application-event decoding without changing raw chain history.
+Reorg-safe reference indexer for the current Swaputer `Events`. It scans only configured Kernel addresses and the exact `Events(bytes32,uint64,bytes)` topic, delegates receipt decoding to `@swaputer-labs/receipt-codec`, and stores canonical plus orphaned raw history in SQLite. Stage 6C adds code-hash-bound verified and declared application-event decoding without changing raw chain history.
 
 ## Commands
 

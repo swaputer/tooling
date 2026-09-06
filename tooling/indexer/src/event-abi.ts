@@ -1,4 +1,4 @@
-import { hexToBytes, type Bytes32, type Hex } from "@swaputer/receipt-codec";
+import { hexToBytes, type Bytes32, type Hex } from "@swaputer-labs/receipt-codec";
 import { keccak_256 } from "@noble/hashes/sha3";
 
 import type { Address } from "./types.js";

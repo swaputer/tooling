@@ -1,6 +1,6 @@
 {
-  "name": "@swaputer/tinysol",
-  "version": "0.3.0",
+  "name": "@swaputer-labs/tinysol",
+  "version": "0.3.1",
   "private": true,
   "type": "module",
   "bin": {

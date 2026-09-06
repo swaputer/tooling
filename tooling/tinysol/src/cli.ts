@@ -20,6 +20,21 @@ import type { EstimateMiniVMInput, SimulateMiniVMInput } from "./simulator-types
 
 type Options = Readonly<Record<string, string | boolean>>;
 
+const USAGE = `TinySol toolchain
+
+Usage:
+  tinysol isa check
+  tinysol asm --input <file> --output <file> [--manifest <file>] [--force]
+  tinysol disasm --input <file> --output <file> [--force]
+  tinysol validate --input <file>
+  tinysol inspect --input <file> [--json]
+  tinysol hash --input <file>
+  tinysol check --input <file>
+  tinysol ast --input <file> --json
+  tinysol compile --input <file> --output <file> --abi <file> --events <file> --storage-layout <file> --manifest <file> --assembly <file> --source-map <file> [--force]
+  tinysol simulate --input <file>
+  tinysol estimate --input <file>`;
+
 function parseOptions(args: readonly string[]): Options {
   const options: Record<string, string | boolean> = {};
   for (let index = 0; index < args.length; index += 1) {
@@ -85,6 +100,10 @@ function isPackage(bytes: Uint8Array): boolean {
 
 async function main(args: readonly string[]): Promise<void> {
   const [command, subcommand, ...rest] = args;
+  if ((command === "--help" || command === "help") && subcommand === undefined) {
+    process.stdout.write(`${USAGE}\n`);
+    return;
+  }
   if (command === "isa" && subcommand === "check" && rest.length === 0) {
     process.stdout.write(json({ version: ISA_VERSION, opcodeCount: INSTRUCTIONS.length, keccak256: ISA_FILE_KECCAK, sha256: ISA_FILE_SHA256, status: "verified" }));
     return;

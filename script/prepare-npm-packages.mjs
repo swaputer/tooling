@@ -10,7 +10,13 @@ import { fileURLToPath } from "node:url";
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const configPath = resolve(repositoryRoot, "release/npm/packages.json");
 const defaultOutput = resolve(repositoryRoot, "artifacts/npm");
-const PACKAGE_NAME = /^@swaputer\/[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const PACKAGE_SCOPE = "@swaputer-labs/";
+const PACKAGE_NAME = /^@swaputer-labs\/[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const ALLOWED_PACKAGE_NAMES = new Set([
+  "@swaputer-labs/receipt-codec",
+  "@swaputer-labs/tinysol",
+  "@swaputer-labs/cli"
+]);
 const SEMVER = /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$/;
 const SAFE_PATH = /^[A-Za-z0-9._/-]+$/;
 const TEXT_EXTENSIONS = new Set([".js", ".mjs", ".cjs", ".json", ".map", ".md", ".ts", ".sol"]);
@@ -96,7 +102,7 @@ function validateConfig(raw) {
     const entry = object(rawPackage, `packages[${index}]`);
     const name = string(entry.name, `packages[${index}].name`);
     const version = string(entry.version, `packages[${index}].version`);
-    if (!PACKAGE_NAME.test(name)) fail(`invalid package name: ${name}`);
+    if (!PACKAGE_NAME.test(name) || !ALLOWED_PACKAGE_NAMES.has(name)) fail(`package is not allowlisted: ${name}`);
     if (!SEMVER.test(version)) fail(`invalid package version: ${version}`);
     if (seen.has(name)) fail(`duplicate package: ${name}`);
     seen.add(name);
@@ -214,7 +220,7 @@ async function preparePackage(entry, config, stagingRoot, output, skipTests) {
   const sourceDirectory = resolve(repositoryRoot, entry.sourceDirectory);
   const sourceManifest = JSON.parse(await readFile(join(sourceDirectory, "package.json"), "utf8"));
   run("npm", ["run", skipTests ? "build" : "test"], sourceDirectory);
-  const stage = join(stagingRoot, entry.name.replace("@swaputer/", ""));
+  const stage = join(stagingRoot, entry.name.slice(PACKAGE_SCOPE.length));
   await mkdir(stage, { recursive: true });
   for (const include of entry.include) {
     const source = join(sourceDirectory, include);

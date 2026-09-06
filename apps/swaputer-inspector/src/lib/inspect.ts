@@ -1,4 +1,4 @@
-import { decodeVMReceipt, isVMReceiptError, type Hex as ReceiptHex } from "@swaputer/receipt-codec";
+import { decodeVMReceipt, isVMReceiptError, type Hex as ReceiptHex } from "@swaputer-labs/receipt-codec";
 import { keccak_256 } from "@noble/hashes/sha3";
 import { DEPLOYMENTS, type SwaputerDeployment } from "./deployments";
 import { HttpRpcTransport, assertTransactionHash, type RpcTransport } from "./rpc";

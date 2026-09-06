@@ -15,6 +15,12 @@ async function invoke(args: readonly string[]): Promise<{ stdout: string; stderr
   return run(process.execPath, [cli, ...args], { cwd: packageRoot });
 }
 
+test("CLI exposes the documented help entry point", async () => {
+  const result = await invoke(["--help"]);
+  assert.match(result.stdout, /^TinySol toolchain\n\nUsage:/);
+  assert.equal(result.stderr, "");
+});
+
 test("CLI reports the frozen ISA in stable JSON", async () => {
   const result = await invoke(["isa", "check"]);
   const parsed = JSON.parse(result.stdout) as { opcodeCount: number; status: string; version: number };

@@ -1,4 +1,4 @@
-import type { VMRecord } from "@swaputer/receipt-codec";
+import type { VMRecord } from "@swaputer-labs/receipt-codec";
 
 const APPLICATION_NAMES: Readonly<Record<string, string>> = Object.freeze({
   "0xbc7a322f72742a0c810e1f76615f57ed3a5bbfcbd956d3d451b3158968faace9": "Transfer",

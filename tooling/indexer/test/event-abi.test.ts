@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { decodeVMReceipt, type Bytes32, type Hex } from "@swaputer/receipt-codec";
+import { decodeVMReceipt, type Bytes32, type Hex } from "@swaputer-labs/receipt-codec";
 
 import {
   EventAbiError,

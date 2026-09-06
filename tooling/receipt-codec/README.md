@@ -1,11 +1,11 @@
-# `@swaputer/receipt-codec`
+# `@swaputer-labs/receipt-codec`
 
 Dependency-free runtime codec for the frozen SwapVM `VMReceiptV1` payload. Node and `@noble/hashes` are development-only dependencies used for tests, Solidity constant generation checks and freeze-manifest verification; the code under `src/` imports no third-party package.
 
 ## Installation
 
 ```sh
-npm install @swaputer/receipt-codec
+npm install @swaputer-labs/receipt-codec
 ```
 
 Requires Node.js 20 or newer and uses ES modules.
@@ -17,7 +17,7 @@ import {
   decodeVMReceipt,
   isVMReceiptError,
   type Hex
-} from "@swaputer/receipt-codec";
+} from "@swaputer-labs/receipt-codec";
 
 export function inspectReceipt(payload: Hex) {
   try {
@@ -37,7 +37,7 @@ export function inspectReceipt(payload: Hex) {
 ```
 
 The decoder validates the complete payload before returning anything. It does
-not fetch transactions or trust partial records. Use `@swaputer/cli` when the
+not fetch transactions or trust partial records. Use `@swaputer-labs/cli` when the
 input is a transaction hash rather than an already extracted receipt payload.
 
 ## API
