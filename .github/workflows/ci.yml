@@ -1,0 +1,60 @@
+name: Tooling CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tooling-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  node-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CI: "true"
+      NPM_CONFIG_AUDIT: "false"
+      NPM_CONFIG_FUND: "false"
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22.21.0
+          cache: npm
+          cache-dependency-path: |
+            tooling/receipt-codec/package-lock.json
+            tooling/tinysol/package-lock.json
+            tooling/cli/package-lock.json
+            tooling/deployment-manifest/package-lock.json
+            tooling/indexer/package-lock.json
+            apps/swaputer-inspector/package-lock.json
+      - name: Install exact dependencies
+        run: |
+          npm ci --prefix tooling/receipt-codec
+          npm ci --prefix tooling/tinysol
+          npm ci --prefix tooling/cli
+          npm ci --prefix tooling/deployment-manifest
+          npm ci --prefix tooling/indexer
+          npm ci --prefix apps/swaputer-inspector
+      - name: Test receipt codec
+        run: npm test --prefix tooling/receipt-codec
+      - name: Test TinySol
+        run: npm test --prefix tooling/tinysol
+      - name: Test CLI
+        run: npm test --prefix tooling/cli
+      - name: Test deployment manifest
+        run: npm test --prefix tooling/deployment-manifest
+      - name: Test reference indexer
+        run: npm test --prefix tooling/indexer
+      - name: Test and build Inspector
+        run: |
+          npm run typecheck --prefix apps/swaputer-inspector
+          npm test --prefix apps/swaputer-inspector
+          npm run build --prefix apps/swaputer-inspector
