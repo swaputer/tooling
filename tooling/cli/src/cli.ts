@@ -7,7 +7,7 @@ import { inspectTransaction } from "./inspect.js";
 import { jsonStringify } from "./json.js";
 import { rpcUrlFromEnvironment } from "./rpc.js";
 
-const VERSION = "0.1.1";
+const VERSION = "0.1.2";
 const USAGE = `Usage:
   swaputer inspect <transaction-hash> --rpc-env <ENV_NAME> [--network base-sepolia] [--json]
   swaputer decode-receipt <0x-payload> [--json]
