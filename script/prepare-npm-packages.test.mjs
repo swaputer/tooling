@@ -15,6 +15,7 @@ import {
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const publishedPlan = JSON.parse(await readFile(join(repositoryRoot, "release/npm/packages.json"), "utf8"));
 const publication = JSON.parse(await readFile(join(repositoryRoot, "release/npm/swaputer-labs-publication.json"), "utf8"));
+const receiptCodecPackage = JSON.parse(await readFile(join(repositoryRoot, "tooling/receipt-codec/package.json"), "utf8"));
 
 test("published npm identities cannot be prepared again", () => {
   const config = validateConfig(publishedPlan);
@@ -66,6 +67,22 @@ test("future public manifests link to public documentation without private repos
   assert.equal(manifest.homepage, "https://docs.swaputer.xyz/developers/tooling-packages");
   assert.equal(Object.hasOwn(manifest, "repository"), false);
   assert.equal(Object.hasOwn(manifest, "bugs"), false);
+});
+
+test("local receipt-codec lockfile identities match the source package", async () => {
+  const lockfiles = [
+    ["apps/swaputer-inspector/package-lock.json", "../../tooling/receipt-codec"],
+    ["tooling/indexer/package-lock.json", "../receipt-codec"]
+  ];
+
+  for (const [relativePath, packageKey] of lockfiles) {
+    const lock = JSON.parse(await readFile(join(repositoryRoot, relativePath), "utf8"));
+    assert.equal(
+      lock.packages?.[packageKey]?.version,
+      receiptCodecPackage.version,
+      `${relativePath} must identify the current local receipt-codec version`
+    );
+  }
 });
 
 test("only a pre-publication plan may create tarballs", () => {
