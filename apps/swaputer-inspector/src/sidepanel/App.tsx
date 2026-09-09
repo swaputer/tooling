@@ -11,7 +11,7 @@ import { inspectTransaction, isInspectionError } from "../lib/inspect";
 import { InspectionErrorCode, type InspectionResult, type InspectorSelection } from "../lib/types";
 
 const SELECTION_KEY = "swaputerInspectorSelection";
-const DEV_SAMPLE_TRANSACTION = "0x75e5d367bf42acf2555b71a0d1004403936fab89f5ed782d80ab97f3eb935331";
+const DEV_SAMPLE_TRANSACTION = "0x65d5031f3d450938c2351dd22b7126c603bd3f0248368ec2996bcec46ed7acd0";
 
 type ViewState =
   | { readonly kind: "idle" }
@@ -111,6 +111,14 @@ function ErrorInspector({ code, transactionHash, retry }: { code: string; transa
       title: "Transaction reverted",
       body: "Reverted transactions cannot retain a Swaputer execution receipt."
     },
+    [InspectionErrorCode.TRANSACTION_NOT_CANONICAL]: {
+      title: "Canonical verification failed",
+      body: "The receipt no longer matches the canonical block or transaction returned by the RPC."
+    },
+    [InspectionErrorCode.TRANSACTION_NOT_FINALIZED]: {
+      title: "Transaction not finalized",
+      body: "The transaction has not reached the finalized chain head and 12-confirmation safety floor yet."
+    },
     [InspectionErrorCode.UNSUPPORTED_DEPLOYMENT]: {
       title: "Unknown deployment",
       body: "A Events-shaped event exists, but it is not bound to a supported Swaputer deployment."
@@ -172,6 +180,8 @@ function ReadyInspector({ result }: { result: InspectionResult }) {
       <section className="summary-section">
         <Field label="Network" value={result.deployment.networkName} />
         <Field label="Status" value="Verified" />
+        <Field label="Finality" value={`Finalized · ${result.confirmations} confirmations`} />
+        <Field label="Block" value={result.blockNumber.toString()} />
         <Field label="World ID" value={execution.worldId} mono />
         <Field label="Executed bytes" value={`${formatInteger(summary.executedBytes)} bytes`} />
         <Field label="Actor" value={summary.actor === `0x${"0".repeat(64)}` ? "Unsigned NOP" : summary.actor} mono />
@@ -237,7 +247,7 @@ export function App() {
         <main className="center-state">
           <LoaderCircle className="spinner" size={25} />
           <h1>Checking the receipt</h1>
-          <p>Verifying the chain, Kernel runtime and strict VMReceiptV1 structure.</p>
+          <p>Verifying canonical finality, Kernel runtime and strict VMReceiptV1 structure.</p>
           <code>{shorten(state.transactionHash, 14, 10)}</code>
         </main>
       );

@@ -7,12 +7,18 @@ import {
   InspectionErrorCode,
   type Hex,
   type InspectionResult,
+  type RpcBlock,
   type RpcLog,
   type RpcReceipt,
+  type RpcTransaction,
   type SwaputerExecution
 } from "./types";
 
 export const EVENTS_TOPIC = "0x602812b230e5dc416bb4163643fb95093808246664e5b824bf2849ffb8c33d04";
+export const MINIMUM_INSPECTION_CONFIRMATIONS = 12n;
+const QUANTITY = /^0x(?:0|[1-9a-fA-F][0-9a-fA-F]*)$/;
+const ADDRESS = /^0x[0-9a-fA-F]{40}$/;
+const BYTES32 = /^0x[0-9a-fA-F]{64}$/;
 
 function normalizeHex(value: string): Hex {
   return value.toLowerCase() as Hex;
@@ -42,6 +48,44 @@ function readWord(bytes: Uint8Array, offset: number): bigint {
   let value = 0n;
   for (let index = 0; index < 32; index += 1) value = (value << 8n) | BigInt(bytes[offset + index] ?? 0);
   return value;
+}
+
+function quantity(value: string, field: string): bigint {
+  if (!QUANTITY.test(value)) throw new InspectionError(InspectionErrorCode.MALFORMED_EVENTS, { field });
+  return BigInt(value);
+}
+
+function validateReceiptShape(receipt: RpcReceipt): void {
+  if (receipt.status === "0x0") throw new InspectionError(InspectionErrorCode.TRANSACTION_REVERTED);
+  if (receipt.status !== "0x1") throw new InspectionError(InspectionErrorCode.MALFORMED_EVENTS, { field: "status" });
+  assertTransactionHash(receipt.transactionHash);
+  if (!BYTES32.test(receipt.blockHash)) throw new InspectionError(InspectionErrorCode.MALFORMED_EVENTS, { field: "blockHash" });
+  quantity(receipt.blockNumber, "blockNumber");
+  quantity(receipt.transactionIndex, "transactionIndex");
+  if (!ADDRESS.test(receipt.from)) throw new InspectionError(InspectionErrorCode.MALFORMED_EVENTS, { field: "from" });
+  if (receipt.to !== null && !ADDRESS.test(receipt.to)) throw new InspectionError(InspectionErrorCode.MALFORMED_EVENTS, { field: "to" });
+  if (receipt.contractAddress !== null && !ADDRESS.test(receipt.contractAddress)) {
+    throw new InspectionError(InspectionErrorCode.MALFORMED_EVENTS, { field: "contractAddress" });
+  }
+  if (!Array.isArray(receipt.logs)) throw new InspectionError(InspectionErrorCode.MALFORMED_EVENTS, { field: "logs" });
+  for (const log of receipt.logs) {
+    if (!ADDRESS.test(log.address)
+      || !Array.isArray(log.topics) || log.topics.some((topic: unknown) => typeof topic !== "string" || !BYTES32.test(topic))
+      || !/^0x(?:[0-9a-fA-F]{2})*$/.test(log.data)
+      || !BYTES32.test(log.blockHash)) {
+      throw new InspectionError(InspectionErrorCode.MALFORMED_EVENTS, { field: "log" });
+    }
+    quantity(log.logIndex, "log.logIndex");
+    quantity(log.transactionIndex, "log.transactionIndex");
+    quantity(log.blockNumber, "log.blockNumber");
+    assertTransactionHash(log.transactionHash);
+    if (log.transactionHash.toLowerCase() !== receipt.transactionHash.toLowerCase()
+      || log.blockHash.toLowerCase() !== receipt.blockHash.toLowerCase()
+      || log.blockNumber !== receipt.blockNumber
+      || log.transactionIndex !== receipt.transactionIndex) {
+      throw new InspectionError(InspectionErrorCode.MALFORMED_EVENTS, { field: "log.receiptLink" });
+    }
+  }
 }
 
 export function decodeOuterPayload(data: string): Hex {
@@ -107,8 +151,11 @@ function validateEvents(log: RpcLog, deployment: SwaputerDeployment): SwaputerEx
   }
 }
 
-export function inspectRpcReceipt(receipt: RpcReceipt, deployment: SwaputerDeployment): Omit<InspectionResult, "rpcUrl"> {
-  if (receipt.status !== "0x1") throw new InspectionError(InspectionErrorCode.TRANSACTION_REVERTED);
+export function inspectRpcReceipt(
+  receipt: RpcReceipt,
+  deployment: SwaputerDeployment
+): Omit<InspectionResult, "rpcUrl" | "confirmations" | "finalizedBlockNumber" | "finalizedBlockHash"> {
+  validateReceiptShape(receipt);
   const matchingTopic = receipt.logs.filter((log) => log.topics[0]?.toLowerCase() === EVENTS_TOPIC);
   if (matchingTopic.length === 0) throw new InspectionError(InspectionErrorCode.NOT_SWAPUTER);
   const matchingKernel = matchingTopic.filter((log) => log.address.toLowerCase() === deployment.kernel);
@@ -118,11 +165,75 @@ export function inspectRpcReceipt(receipt: RpcReceipt, deployment: SwaputerDeplo
     kind: "verified" as const,
     deployment,
     transactionHash: normalizeHex(receipt.transactionHash),
-    blockNumber: BigInt(receipt.blockNumber),
+    blockNumber: quantity(receipt.blockNumber, "blockNumber"),
     blockHash: normalizeHex(receipt.blockHash),
-    transactionIndex: BigInt(receipt.transactionIndex),
+    transactionIndex: quantity(receipt.transactionIndex, "transactionIndex"),
     executions: Object.freeze(executions)
   });
+}
+
+function canonicalBlock(value: RpcBlock | null, field: string): { readonly number: bigint; readonly hash: Hex } {
+  if (value === null || typeof value !== "object" || !BYTES32.test(value.hash)) {
+    throw new InspectionError(InspectionErrorCode.TRANSACTION_NOT_CANONICAL, { field });
+  }
+  return Object.freeze({ number: quantity(value.number, `${field}.number`), hash: normalizeHex(value.hash) });
+}
+
+function validateCanonicalTransaction(transaction: RpcTransaction | null, receipt: RpcReceipt, deployment: SwaputerDeployment): void {
+  if (transaction === null || typeof transaction !== "object") {
+    throw new InspectionError(InspectionErrorCode.TRANSACTION_NOT_CANONICAL, { field: "transaction" });
+  }
+  if (!BYTES32.test(transaction.hash)
+    || transaction.hash.toLowerCase() !== receipt.transactionHash.toLowerCase()
+    || transaction.blockHash === null || !BYTES32.test(transaction.blockHash)
+    || transaction.blockHash.toLowerCase() !== receipt.blockHash.toLowerCase()
+    || transaction.blockNumber === null || quantity(transaction.blockNumber, "transaction.blockNumber") !== quantity(receipt.blockNumber, "blockNumber")
+    || transaction.transactionIndex === null || quantity(transaction.transactionIndex, "transaction.transactionIndex") !== quantity(receipt.transactionIndex, "transactionIndex")
+    || quantity(transaction.chainId, "transaction.chainId") !== deployment.chainId
+    || !ADDRESS.test(transaction.from) || transaction.from.toLowerCase() !== receipt.from.toLowerCase()
+    || (transaction.to !== null && !ADDRESS.test(transaction.to))
+    || (transaction.to?.toLowerCase() ?? null) !== (receipt.to?.toLowerCase() ?? null)) {
+    throw new InspectionError(InspectionErrorCode.TRANSACTION_NOT_CANONICAL, { field: "transactionLink" });
+  }
+  quantity(transaction.nonce, "transaction.nonce");
+}
+
+async function verifyCanonicalFinality(
+  rpcUrl: string,
+  receipt: RpcReceipt,
+  deployment: SwaputerDeployment,
+  transport: RpcTransport
+): Promise<Pick<InspectionResult, "confirmations" | "finalizedBlockNumber" | "finalizedBlockHash">> {
+  const [blockValue, transaction, finalizedValue, latestValue] = await Promise.all([
+    transport.request<RpcBlock | null>(rpcUrl, "eth_getBlockByNumber", [receipt.blockNumber, false]),
+    transport.request<RpcTransaction | null>(rpcUrl, "eth_getTransactionByHash", [receipt.transactionHash]),
+    transport.request<RpcBlock | null>(rpcUrl, "eth_getBlockByNumber", ["finalized", false]),
+    transport.request<RpcBlock | null>(rpcUrl, "eth_getBlockByNumber", ["latest", false])
+  ]);
+  const block = canonicalBlock(blockValue, "containingBlock");
+  const finalized = canonicalBlock(finalizedValue, "finalizedBlock");
+  const latest = canonicalBlock(latestValue, "latestBlock");
+  const receiptNumber = quantity(receipt.blockNumber, "blockNumber");
+  if (finalized.number > latest.number
+    || block.number !== receiptNumber || block.hash !== normalizeHex(receipt.blockHash)) {
+    throw new InspectionError(InspectionErrorCode.TRANSACTION_NOT_CANONICAL, { field: "canonicalChain" });
+  }
+  validateCanonicalTransaction(transaction, receipt, deployment);
+  if (finalized.number < receiptNumber
+    || (finalized.number === receiptNumber && finalized.hash !== normalizeHex(receipt.blockHash))) {
+    throw new InspectionError(InspectionErrorCode.TRANSACTION_NOT_FINALIZED, {
+      blockNumber: receiptNumber.toString(),
+      finalizedBlockNumber: finalized.number.toString()
+    });
+  }
+  const confirmations = latest.number >= receiptNumber ? latest.number - receiptNumber + 1n : 0n;
+  if (confirmations < MINIMUM_INSPECTION_CONFIRMATIONS) {
+    throw new InspectionError(InspectionErrorCode.TRANSACTION_NOT_FINALIZED, {
+      confirmations: confirmations.toString(),
+      requiredConfirmations: MINIMUM_INSPECTION_CONFIRMATIONS.toString()
+    });
+  }
+  return Object.freeze({ confirmations, finalizedBlockNumber: finalized.number, finalizedBlockHash: finalized.hash });
 }
 
 function hashRuntimeCode(code: string): Hex {
@@ -146,12 +257,13 @@ async function inspectOnRpc(
     throw new InspectionError(InspectionErrorCode.MALFORMED_EVENTS, { field: "transactionHash" });
   }
   const decoded = inspectRpcReceipt(receipt, deployment);
+  const finality = await verifyCanonicalFinality(rpcUrl, receipt, deployment, transport);
   const runtimeCode = await transport.request<string>(rpcUrl, "eth_getCode", [deployment.kernel, receipt.blockNumber]);
   const actualCodeHash = hashRuntimeCode(runtimeCode);
   if (actualCodeHash !== deployment.kernelRuntimeCodeHash) {
     throw new InspectionError(InspectionErrorCode.KERNEL_CODE_HASH_MISMATCH, { actualCodeHash });
   }
-  return Object.freeze({ ...decoded, rpcUrl });
+  return Object.freeze({ ...decoded, ...finality, rpcUrl });
 }
 
 export async function inspectTransaction(

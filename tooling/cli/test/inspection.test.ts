@@ -60,8 +60,11 @@ function receipt(overrides: Partial<RpcReceipt> = {}): RpcReceipt {
   return {
     blockHash: `0x${"b".repeat(64)}`,
     blockNumber: "0x2",
+    contractAddress: null,
+    from: "0x1111111111111111111111111111111111111111",
     transactionHash: TRANSACTION_HASH,
     transactionIndex: "0x1",
+    to: deployment.kernel,
     status: "0x1",
     logs: [log()],
     ...overrides
@@ -93,23 +96,79 @@ test("strictly recognizes and decodes a Kernel Events receipt", () => {
   );
 });
 
-test("online inspection verifies chain and historical Kernel code without exposing the RPC URL", async () => {
-  const transport: RpcTransport = {
-    async request<T>(_url: string, method: string): Promise<T> {
+function canonicalTransport(overrides: {
+  readonly containingHash?: string;
+  readonly finalizedNumber?: string;
+  readonly latestNumber?: string;
+  readonly transactionBlockHash?: string;
+} = {}): RpcTransport {
+  return {
+    async request<T>(_url: string, method: string, params: readonly unknown[]): Promise<T> {
       if (method === "eth_chainId") return "0x14a34" as T;
       if (method === "eth_getTransactionReceipt") return receipt() as T;
       if (method === "eth_getCode") return "0x6000" as T;
-      throw new Error("unexpected method");
+      if (method === "eth_getTransactionByHash") return {
+        hash: TRANSACTION_HASH,
+        blockHash: overrides.transactionBlockHash ?? `0x${"b".repeat(64)}`,
+        blockNumber: "0x2",
+        transactionIndex: "0x1",
+        chainId: "0x14a34",
+        from: "0x1111111111111111111111111111111111111111",
+        to: deployment.kernel,
+        nonce: "0x7"
+      } as T;
+      if (method === "eth_getBlockByNumber") {
+        const block = params[0];
+        if (block === "0x2") return { number: "0x2", hash: overrides.containingHash ?? `0x${"b".repeat(64)}` } as T;
+        if (block === "finalized") return { number: overrides.finalizedNumber ?? "0x10", hash: `0x${"c".repeat(64)}` } as T;
+        if (block === "latest") return { number: overrides.latestNumber ?? "0x20", hash: `0x${"d".repeat(64)}` } as T;
+      }
+      throw new Error(`unexpected method ${method}`);
     }
   };
+}
+
+test("online inspection verifies canonical finality and historical Kernel code without exposing the RPC URL", async () => {
   const result = await inspectTransaction(TRANSACTION_HASH, {
     deployment,
     rpcUrl: "https://secret.invalid/key",
     rpcEnvironment: "TEST_RPC",
-    transport
+    transport: canonicalTransport()
   });
   assert.equal(result.rpcEnvironment, "TEST_RPC");
+  assert.equal(result.finalizedBlockNumber, 16n);
+  assert.equal(result.confirmations, 31n);
   assert.equal(jsonStringify(result).includes("secret.invalid"), false);
+});
+
+test("online inspection rejects orphaned, unfinalized, and envelope-mismatched receipts", async () => {
+  await assert.rejects(
+    () => inspectTransaction(TRANSACTION_HASH, { deployment, rpcUrl: "https://rpc.invalid", rpcEnvironment: "TEST_RPC", transport: canonicalTransport({ containingHash: `0x${"e".repeat(64)}` }) }),
+    (error: unknown) => error instanceof InspectionError && error.code === InspectionErrorCode.TRANSACTION_NOT_CANONICAL
+  );
+  await assert.rejects(
+    () => inspectTransaction(TRANSACTION_HASH, { deployment, rpcUrl: "https://rpc.invalid", rpcEnvironment: "TEST_RPC", transport: canonicalTransport({ finalizedNumber: "0x1" }) }),
+    (error: unknown) => error instanceof InspectionError && error.code === InspectionErrorCode.TRANSACTION_NOT_FINALIZED
+  );
+  await assert.rejects(
+    () => inspectTransaction(TRANSACTION_HASH, { deployment, rpcUrl: "https://rpc.invalid", rpcEnvironment: "TEST_RPC", transport: canonicalTransport({ finalizedNumber: "0xd", latestNumber: "0xc" }) }),
+    (error: unknown) => error instanceof InspectionError && error.code === InspectionErrorCode.TRANSACTION_NOT_CANONICAL
+  );
+  await assert.rejects(
+    () => inspectTransaction(TRANSACTION_HASH, { deployment, rpcUrl: "https://rpc.invalid", rpcEnvironment: "TEST_RPC", transport: canonicalTransport({ finalizedNumber: "0x8", latestNumber: "0xc" }) }),
+    (error: unknown) => error instanceof InspectionError && error.code === InspectionErrorCode.TRANSACTION_NOT_FINALIZED
+  );
+  const exactlyTwelve = await inspectTransaction(TRANSACTION_HASH, {
+    deployment,
+    rpcUrl: "https://rpc.invalid",
+    rpcEnvironment: "TEST_RPC",
+    transport: canonicalTransport({ finalizedNumber: "0x8", latestNumber: "0xd" })
+  });
+  assert.equal(exactlyTwelve.confirmations, 12n);
+  await assert.rejects(
+    () => inspectTransaction(TRANSACTION_HASH, { deployment, rpcUrl: "https://rpc.invalid", rpcEnvironment: "TEST_RPC", transport: canonicalTransport({ transactionBlockHash: `0x${"f".repeat(64)}` }) }),
+    (error: unknown) => error instanceof InspectionError && error.code === InspectionErrorCode.TRANSACTION_NOT_CANONICAL
+  );
 });
 
 test("CLI decodes a receipt and returns stable usage failures", () => {

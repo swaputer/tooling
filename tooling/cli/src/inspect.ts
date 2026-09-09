@@ -2,13 +2,23 @@ import { decodeVMReceipt, isVMReceiptError, type Hex as ReceiptHex } from "@swap
 import { keccak_256 } from "@noble/hashes/sha3";
 import { InspectionError, InspectionErrorCode } from "./errors.js";
 import { HttpRpcTransport, type RpcTransport } from "./rpc.js";
-import type { Hex, InspectionResult, RpcLog, RpcReceipt, SwaputerDeployment, SwaputerExecution } from "./types.js";
+import type {
+  Hex,
+  InspectionResult,
+  RpcBlock,
+  RpcLog,
+  RpcReceipt,
+  RpcTransaction,
+  SwaputerDeployment,
+  SwaputerExecution
+} from "./types.js";
 
 export const EVENTS_TOPIC = "0x602812b230e5dc416bb4163643fb95093808246664e5b824bf2849ffb8c33d04";
 const HEX_BYTES = /^0x(?:[0-9a-fA-F]{2})*$/;
 const QUANTITY = /^0x(?:0|[1-9a-fA-F][0-9a-fA-F]*)$/;
 const ADDRESS = /^0x[0-9a-fA-F]{40}$/;
 const BYTES32 = /^0x[0-9a-fA-F]{64}$/;
+export const MINIMUM_INSPECTION_CONFIRMATIONS = 12n;
 
 function normalizeHex(value: string): Hex {
   return value.toLowerCase() as Hex;
@@ -46,6 +56,11 @@ function validateReceiptShape(receipt: RpcReceipt): void {
   if (!BYTES32.test(receipt.blockHash)) throw new InspectionError(InspectionErrorCode.MALFORMED_EVENTS, { field: "blockHash" });
   quantity(receipt.blockNumber, "blockNumber");
   quantity(receipt.transactionIndex, "transactionIndex");
+  if (!ADDRESS.test(receipt.from)) throw new InspectionError(InspectionErrorCode.MALFORMED_EVENTS, { field: "from" });
+  if (receipt.to !== null && !ADDRESS.test(receipt.to)) throw new InspectionError(InspectionErrorCode.MALFORMED_EVENTS, { field: "to" });
+  if (receipt.contractAddress !== null && !ADDRESS.test(receipt.contractAddress)) {
+    throw new InspectionError(InspectionErrorCode.MALFORMED_EVENTS, { field: "contractAddress" });
+  }
   if (!Array.isArray(receipt.logs)) throw new InspectionError(InspectionErrorCode.MALFORMED_EVENTS, { field: "logs" });
   for (const log of receipt.logs) {
     if (log === null || typeof log !== "object") throw new InspectionError(InspectionErrorCode.MALFORMED_EVENTS, { field: "log" });
@@ -114,7 +129,10 @@ function validateEvents(log: RpcLog, deployment: SwaputerDeployment): SwaputerEx
   }
 }
 
-export function inspectRpcReceipt(receipt: RpcReceipt, deployment: SwaputerDeployment): Omit<InspectionResult, "rpcEnvironment"> {
+export function inspectRpcReceipt(
+  receipt: RpcReceipt,
+  deployment: SwaputerDeployment
+): Omit<InspectionResult, "rpcEnvironment" | "confirmations" | "finalizedBlockNumber" | "finalizedBlockHash"> {
   validateReceiptShape(receipt);
   const matchingTopic = receipt.logs.filter((log) => log.topics[0]?.toLowerCase() === EVENTS_TOPIC);
   if (matchingTopic.length === 0) throw new InspectionError(InspectionErrorCode.NOT_SWAPUTER);
@@ -128,6 +146,90 @@ export function inspectRpcReceipt(receipt: RpcReceipt, deployment: SwaputerDeplo
     blockHash: normalizeHex(receipt.blockHash),
     transactionIndex: quantity(receipt.transactionIndex, "transactionIndex"),
     executions: Object.freeze(matchingKernel.map((log) => validateEvents(log, deployment)))
+  });
+}
+
+function canonicalBlock(value: RpcBlock | null, field: string): { readonly number: bigint; readonly hash: Hex } {
+  if (value === null || typeof value !== "object" || !BYTES32.test(value.hash)) {
+    throw new InspectionError(InspectionErrorCode.TRANSACTION_NOT_CANONICAL, { field });
+  }
+  return Object.freeze({ number: quantity(value.number, `${field}.number`), hash: normalizeHex(value.hash) });
+}
+
+function validateCanonicalTransaction(
+  transaction: RpcTransaction | null,
+  receipt: RpcReceipt,
+  deployment: SwaputerDeployment
+): void {
+  if (transaction === null || typeof transaction !== "object") {
+    throw new InspectionError(InspectionErrorCode.TRANSACTION_NOT_CANONICAL, { field: "transaction" });
+  }
+  const receiptHash = normalizeHex(receipt.transactionHash);
+  const receiptBlockHash = normalizeHex(receipt.blockHash);
+  const receiptFrom = receipt.from.toLowerCase();
+  const receiptTo = receipt.to?.toLowerCase() ?? null;
+  if (
+    !BYTES32.test(transaction.hash)
+    || normalizeHex(transaction.hash) !== receiptHash
+    || transaction.blockHash === null
+    || !BYTES32.test(transaction.blockHash)
+    || normalizeHex(transaction.blockHash) !== receiptBlockHash
+    || transaction.blockNumber === null
+    || quantity(transaction.blockNumber, "transaction.blockNumber") !== quantity(receipt.blockNumber, "blockNumber")
+    || transaction.transactionIndex === null
+    || quantity(transaction.transactionIndex, "transaction.transactionIndex") !== quantity(receipt.transactionIndex, "transactionIndex")
+    || quantity(transaction.chainId, "transaction.chainId") !== deployment.chainId
+    || !ADDRESS.test(transaction.from)
+    || transaction.from.toLowerCase() !== receiptFrom
+    || (transaction.to !== null && !ADDRESS.test(transaction.to))
+    || (transaction.to?.toLowerCase() ?? null) !== receiptTo
+  ) {
+    throw new InspectionError(InspectionErrorCode.TRANSACTION_NOT_CANONICAL, { field: "transactionLink" });
+  }
+  quantity(transaction.nonce, "transaction.nonce");
+}
+
+async function verifyCanonicalFinality(
+  rpcUrl: string,
+  receipt: RpcReceipt,
+  deployment: SwaputerDeployment,
+  transport: RpcTransport
+): Promise<Pick<InspectionResult, "confirmations" | "finalizedBlockNumber" | "finalizedBlockHash">> {
+  const [blockValue, transaction, finalizedValue, latestValue] = await Promise.all([
+    transport.request<RpcBlock | null>(rpcUrl, "eth_getBlockByNumber", [receipt.blockNumber, false]),
+    transport.request<RpcTransaction | null>(rpcUrl, "eth_getTransactionByHash", [receipt.transactionHash]),
+    transport.request<RpcBlock | null>(rpcUrl, "eth_getBlockByNumber", ["finalized", false]),
+    transport.request<RpcBlock | null>(rpcUrl, "eth_getBlockByNumber", ["latest", false])
+  ]);
+  const block = canonicalBlock(blockValue, "containingBlock");
+  const finalized = canonicalBlock(finalizedValue, "finalizedBlock");
+  const latest = canonicalBlock(latestValue, "latestBlock");
+  const receiptNumber = quantity(receipt.blockNumber, "blockNumber");
+  const receiptHash = normalizeHex(receipt.blockHash);
+  if (finalized.number > latest.number) {
+    throw new InspectionError(InspectionErrorCode.TRANSACTION_NOT_CANONICAL, { field: "headOrder" });
+  }
+  if (block.number !== receiptNumber || block.hash !== receiptHash) {
+    throw new InspectionError(InspectionErrorCode.TRANSACTION_NOT_CANONICAL, { field: "containingBlock" });
+  }
+  validateCanonicalTransaction(transaction, receipt, deployment);
+  if (finalized.number < receiptNumber || (finalized.number === receiptNumber && finalized.hash !== receiptHash)) {
+    throw new InspectionError(InspectionErrorCode.TRANSACTION_NOT_FINALIZED, {
+      blockNumber: receiptNumber.toString(),
+      finalizedBlockNumber: finalized.number.toString()
+    });
+  }
+  const confirmations = latest.number >= receiptNumber ? latest.number - receiptNumber + 1n : 0n;
+  if (confirmations < MINIMUM_INSPECTION_CONFIRMATIONS) {
+    throw new InspectionError(InspectionErrorCode.TRANSACTION_NOT_FINALIZED, {
+      confirmations: confirmations.toString(),
+      requiredConfirmations: MINIMUM_INSPECTION_CONFIRMATIONS.toString()
+    });
+  }
+  return Object.freeze({
+    confirmations,
+    finalizedBlockNumber: finalized.number,
+    finalizedBlockHash: finalized.hash
   });
 }
 
@@ -156,12 +258,13 @@ export async function inspectTransaction(
     if (receipt === null) throw new InspectionError(InspectionErrorCode.TRANSACTION_NOT_FOUND);
     if (receipt.transactionHash.toLowerCase() !== transactionHash) throw new InspectionError(InspectionErrorCode.MALFORMED_EVENTS, { field: "transactionHash" });
     const decoded = inspectRpcReceipt(receipt, options.deployment);
+    const finality = await verifyCanonicalFinality(options.rpcUrl, receipt, options.deployment, transport);
     const runtimeCode = await transport.request<string>(options.rpcUrl, "eth_getCode", [options.deployment.kernel, receipt.blockNumber]);
     const actualCodeHash = runtimeCodeHash(runtimeCode);
     if (actualCodeHash !== options.deployment.kernelRuntimeCodeHash) {
       throw new InspectionError(InspectionErrorCode.KERNEL_CODE_HASH_MISMATCH, { actualCodeHash });
     }
-    return Object.freeze({ ...decoded, rpcEnvironment: options.rpcEnvironment });
+    return Object.freeze({ ...decoded, ...finality, rpcEnvironment: options.rpcEnvironment });
   } catch (error) {
     if (error instanceof InspectionError) throw error;
     throw new InspectionError(InspectionErrorCode.RPC_UNAVAILABLE, { environment: options.rpcEnvironment }, error);

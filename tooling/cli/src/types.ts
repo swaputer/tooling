@@ -30,10 +30,29 @@ export interface RpcLog {
 export interface RpcReceipt {
   readonly blockHash: string;
   readonly blockNumber: string;
+  readonly contractAddress: string | null;
+  readonly from: string;
   readonly transactionHash: string;
   readonly transactionIndex: string;
+  readonly to: string | null;
   readonly status: string;
   readonly logs: readonly RpcLog[];
+}
+
+export interface RpcBlock {
+  readonly hash: string;
+  readonly number: string;
+}
+
+export interface RpcTransaction {
+  readonly blockHash: string | null;
+  readonly blockNumber: string | null;
+  readonly chainId: string;
+  readonly from: string;
+  readonly hash: string;
+  readonly nonce: string;
+  readonly to: string | null;
+  readonly transactionIndex: string | null;
 }
 
 export interface SwaputerExecution {
@@ -51,6 +70,9 @@ export interface InspectionResult {
   readonly blockNumber: bigint;
   readonly blockHash: Hex;
   readonly transactionIndex: bigint;
+  readonly confirmations: bigint;
+  readonly finalizedBlockNumber: bigint;
+  readonly finalizedBlockHash: Hex;
   readonly executions: readonly SwaputerExecution[];
   readonly rpcEnvironment: string;
 }

@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import fixture from "../../../../tooling/receipt-codec/fixtures/unsigned-nop.json";
 import { BASE_SEPOLIA_DEPLOYMENT } from "./deployments";
-import { decodeOuterPayload, inspectRpcReceipt, EVENTS_TOPIC } from "./inspect";
+import { decodeOuterPayload, inspectRpcReceipt, inspectTransaction, EVENTS_TOPIC } from "./inspect";
+import type { RpcTransport } from "./rpc";
 import { InspectionError, InspectionErrorCode, type RpcLog, type RpcReceipt } from "./types";
 
 function word(value: bigint): string {
@@ -34,8 +35,11 @@ function receipt(overrides: Partial<RpcReceipt> = {}): RpcReceipt {
   return {
     blockHash: `0x${"b".repeat(64)}`,
     blockNumber: "0x2c001df",
+    contractAddress: null,
+    from: "0x1111111111111111111111111111111111111111",
     transactionHash: `0x${"a".repeat(64)}`,
     transactionIndex: "0x1",
+    to: deployment.kernel,
     status: "0x1",
     logs: [log()],
     ...overrides
@@ -103,5 +107,43 @@ describe("Swaputer transaction recognition", () => {
     const result = inspectRpcReceipt(receipt({ logs: [log(), second] }), deployment);
     expect(result.executions.map((execution) => execution.executionHeight)).toEqual([1n, 2n]);
     expect(result.executions.map((execution) => execution.logIndex)).toEqual([2n, 3n]);
+  });
+
+  it("requires the exact receipt block and transaction to remain canonical and finalized", async () => {
+    const hash = `0x${"a".repeat(64)}`;
+    const transport = (containingHash = `0x${"b".repeat(64)}`): RpcTransport => ({
+      async request<T>(_rpcUrl: string, method: string, params: readonly unknown[]): Promise<T> {
+        if (method === "eth_chainId") return deployment.chainIdHex as T;
+        if (method === "eth_getTransactionReceipt") return receipt() as T;
+        if (method === "eth_getCode") return "0x" as T;
+        if (method === "eth_getTransactionByHash") return {
+          hash,
+          blockHash: `0x${"b".repeat(64)}`,
+          blockNumber: "0x2c001df",
+          transactionIndex: "0x1",
+          chainId: deployment.chainIdHex,
+          from: "0x1111111111111111111111111111111111111111",
+          to: deployment.kernel,
+          nonce: "0x1"
+        } as T;
+        if (method === "eth_getBlockByNumber") {
+          if (params[0] === "0x2c001df") return { number: "0x2c001df", hash: containingHash } as T;
+          if (params[0] === "finalized") return { number: "0x2c001f0", hash: `0x${"c".repeat(64)}` } as T;
+          if (params[0] === "latest") return { number: "0x2c00200", hash: `0x${"d".repeat(64)}` } as T;
+        }
+        throw new Error(`unexpected method ${method}`);
+      }
+    });
+    const runtimeDeployment = Object.freeze({
+      ...deployment,
+      kernelRuntimeCodeHash: "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470" as `0x${string}`,
+      rpcUrls: Object.freeze(["https://rpc.invalid"])
+    });
+    await expect(inspectTransaction(hash, { deployment: runtimeDeployment, transport: transport() }))
+      .resolves.toMatchObject({ confirmations: 34n });
+    await expect(inspectTransaction(hash, {
+      deployment: runtimeDeployment,
+      transport: transport(`0x${"e".repeat(64)}`)
+    })).rejects.toMatchObject({ code: InspectionErrorCode.TRANSACTION_NOT_CANONICAL });
   });
 });

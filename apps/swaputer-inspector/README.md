@@ -2,7 +2,9 @@
 
 `Swaputer Inspector` is a read-only Chrome Manifest V3 extension. On supported
 Base Sepolia transaction-detail pages it verifies the transaction receipt using
-an independent RPC, then adds a compact `Swaputer ✓` control beside the
+an independent RPC, proves that its exact block and transaction envelope remain
+canonical and finalized with at least 12 observed confirmations, then adds a
+compact `Swaputer ✓` control beside the
 transaction hash. Clicking the control opens an extension-owned side panel; no
 decoded execution UI is injected into the explorer page.
 
@@ -12,6 +14,8 @@ The explorer DOM is used only to discover a candidate transaction hash. Before
 showing the verified label, the extension independently checks:
 
 - Base Sepolia chain ID `84532`;
+- exact canonical block hash, transaction envelope, finalized head and a
+  12-confirmation minimum;
 - the immutable Kernel address and runtime bytecode hash from the checked-in
   deployment evidence;
 - exact `Events(bytes32,uint64,bytes)` topic and three-topic shape;
@@ -28,9 +32,8 @@ permission. It does not treat explorer-rendered content as trusted data.
 - `https://base-sepolia.blockscout.com/tx/*`
 - `https://sepolia-explorer.base.org/tx/*`
 
-The release is currently bound to the unaudited experimental Base Sepolia v1.2
-World documented in
-`deployments/base-sepolia/swapvm-v1.2-single-sided-market.json`. It must not be
+The release is currently bound to the active, unaudited experimental Base
+Sepolia v1.2 release descriptor shared with `@swaputer-labs/cli`. It must not be
 described as audited, secure, production-ready, or a mainnet release.
 
 ## Commands

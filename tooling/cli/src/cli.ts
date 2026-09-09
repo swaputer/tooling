@@ -55,6 +55,7 @@ function printInspection(result: Awaited<ReturnType<typeof inspectTransaction>>)
   process.stdout.write(`Network: ${result.deployment.networkName} (${result.deployment.chainId})\n`);
   process.stdout.write(`Release: ${result.deployment.releaseName}\n`);
   process.stdout.write(`Block: ${result.blockNumber}\n`);
+  process.stdout.write(`Finality: finalized at ${result.finalizedBlockNumber} (${result.confirmations} confirmations observed)\n`);
   for (const [index, execution] of result.executions.entries()) {
     const summary = execution.receipt.worldExecution;
     process.stdout.write(`Execution ${index + 1}: height=${execution.executionHeight} actor=${summary.actor} target=${summary.rootTarget} bytes=${summary.executedBytes} burned=${summary.tokenBurned}\n`);

@@ -85,7 +85,8 @@ export async function executeBrowserCommand(input: string, options?: BrowserComm
       `Verified Swaputer transaction ${result.transactionHash}`,
       `Network: ${result.deployment.networkName} (${result.deployment.chainId})`,
       `Release: ${result.deployment.releaseName}`,
-      `Block: ${result.blockNumber}`
+      `Block: ${result.blockNumber}`,
+      `Finality: finalized at ${result.finalizedBlockNumber} (${result.confirmations} confirmations observed)`
     ];
     for (const [index, execution] of result.executions.entries()) {
       const summary = execution.receipt.worldExecution;

@@ -2,9 +2,10 @@
 
 Read-only command-line verification for Swaputer SVM transactions. The CLI
 fetches an Ethereum receipt through an explicitly named RPC environment
-variable, verifies the configured chain, Kernel runtime code hash, World ID,
-`Events(bytes32,uint64,bytes)` envelope and complete `VMReceiptV1`, then emits a
-human summary or JSON.
+variable, verifies the configured chain, canonical containing block and
+transaction envelope, finalized head, at least 12 observed confirmations,
+historical Kernel runtime code hash, World ID, `Events(bytes32,uint64,bytes)`
+envelope and complete `VMReceiptV1`, then emits a human summary or JSON.
 
 It never loads a wallet, signs or sends transactions. RPC URLs are not accepted
 as command-line arguments, printed in output or included in structured errors.
@@ -60,6 +61,7 @@ Verified Swaputer transaction 0x...
 Network: Base Sepolia (84532)
 Release: swaputer-v1.2-rc4
 Block: 46449798
+Finality: finalized at 46449820 (23 confirmations observed)
 Execution 1: height=1526 actor=0x... target=0x... bytes=191 burned=191000000000000
 ```
 
