@@ -5,7 +5,12 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
-import { assertNoPublishedIdentityReuse, assertRegistryIdentitiesUnused, validateConfig } from "./prepare-npm-packages.mjs";
+import {
+  assertNoPublishedIdentityReuse,
+  assertRegistryIdentitiesUnused,
+  publicManifest,
+  validateConfig
+} from "./prepare-npm-packages.mjs";
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const publishedPlan = JSON.parse(await readFile(join(repositoryRoot, "release/npm/packages.json"), "utf8"));
@@ -27,6 +32,40 @@ test("a future release plan may contain only the package being released", () => 
   });
   assert.equal(config.packages.length, 1);
   assert.doesNotThrow(() => assertNoPublishedIdentityReuse(config, publication));
+});
+
+test("future public manifests link to public documentation without private repository metadata", () => {
+  const entry = {
+    ...publishedPlan.packages[0],
+    version: "0.1.3"
+  };
+  const source = {
+    ...JSON.parse(JSON.stringify(publication.packages[0])),
+    name: entry.name,
+    version: entry.version,
+    private: true,
+    type: "module",
+    main: "./dist/src/index.js",
+    types: "./dist/src/index.d.ts",
+    exports: {
+      ".": {
+        types: "./dist/src/index.d.ts",
+        import: "./dist/src/index.js"
+      }
+    },
+    engines: { node: ">=20" },
+    repository: {
+      type: "git",
+      url: "git+https://github.com/swaputer/private-tooling.git"
+    },
+    bugs: { url: "https://github.com/swaputer/private-tooling/issues" }
+  };
+
+  const manifest = publicManifest(source, entry, "MIT");
+
+  assert.equal(manifest.homepage, "https://docs.swaputer.xyz/developers/tooling-packages");
+  assert.equal(Object.hasOwn(manifest, "repository"), false);
+  assert.equal(Object.hasOwn(manifest, "bugs"), false);
 });
 
 test("only a pre-publication plan may create tarballs", () => {

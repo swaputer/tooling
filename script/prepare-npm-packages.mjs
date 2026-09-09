@@ -236,7 +236,7 @@ async function scanStaging(stage) {
   return files;
 }
 
-function publicManifest(source, entry, license) {
+export function publicManifest(source, entry, license) {
   if (source.private !== true) fail(`${entry.sourceDirectory} must remain private in the source tree`);
   if (source.name !== entry.name || source.version !== entry.version) fail(`${entry.name} source name/version drift`);
   const manifest = {
@@ -244,12 +244,7 @@ function publicManifest(source, entry, license) {
     version: entry.version,
     description: entry.description,
     license,
-    repository: {
-      type: "git",
-      url: "git+https://github.com/swaputer/tooling.git",
-      directory: entry.sourceDirectory
-    },
-    homepage: `https://github.com/swaputer/tooling/tree/main/${entry.sourceDirectory}#readme`,
+    homepage: "https://docs.swaputer.xyz/developers/tooling-packages",
     keywords: entry.keywords,
     type: source.type,
     main: source.main,
