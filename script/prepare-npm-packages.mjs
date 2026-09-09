@@ -8,7 +8,8 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const configPath = resolve(repositoryRoot, "release/npm/packages.json");
+const defaultConfigPath = resolve(repositoryRoot, "release/npm/packages.json");
+const publicationPath = resolve(repositoryRoot, "release/npm/swaputer-labs-publication.json");
 const defaultOutput = resolve(repositoryRoot, "artifacts/npm");
 const PACKAGE_SCOPE = "@swaputer-labs/";
 const PACKAGE_NAME = /^@swaputer-labs\/[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -49,6 +50,7 @@ function fail(message) {
 
 function parseArguments(arguments_) {
   let output = defaultOutput;
+  let config = defaultConfigPath;
   let skipTests = false;
   for (let index = 0; index < arguments_.length; index += 1) {
     const argument = arguments_[index];
@@ -63,10 +65,18 @@ function parseArguments(arguments_) {
       index += 1;
       continue;
     }
+    if (argument === "--config") {
+      const value = arguments_[index + 1];
+      if (value === undefined || value.startsWith("--")) fail("--config requires a JSON file");
+      config = resolve(value);
+      if (config === repositoryRoot || !config.endsWith(".json")) fail("--config must identify a JSON file");
+      index += 1;
+      continue;
+    }
     fail(`unknown argument: ${argument}`);
   }
   if (output === repositoryRoot || !relative(repositoryRoot, output)) fail("refusing to use the repository root as output");
-  return { output, skipTests };
+  return { config, output, skipTests };
 }
 
 function object(value, field) {
@@ -90,13 +100,15 @@ function safeRelativePath(value, field) {
   return path;
 }
 
-function validateConfig(raw) {
+export function validateConfig(raw) {
   const config = object(raw, "config");
   if (config.schemaVersion !== "swaputer-npm-release/1") fail("unsupported npm release schema");
   if (!["prepared-not-published", "published", "unpublished"].includes(config.status)) fail("invalid npm release status");
   if (config.registry !== "https://registry.npmjs.org") fail("unexpected npm registry");
   if (config.license !== "MIT") fail("the npm package license must be MIT");
-  if (!Array.isArray(config.packages) || config.packages.length !== 3) fail("exactly three packages are required");
+  if (!Array.isArray(config.packages) || config.packages.length < 1 || config.packages.length > ALLOWED_PACKAGE_NAMES.size) {
+    fail("between one and three packages are required");
+  }
   const seen = new Set();
   const packages = config.packages.map((rawPackage, index) => {
     const entry = object(rawPackage, `packages[${index}]`);
@@ -121,6 +133,55 @@ function validateConfig(raw) {
     };
   });
   return { license: config.license, registry: config.registry, status: config.status, packages };
+}
+
+function validatePublication(raw, registry) {
+  const publication = object(raw, "publication");
+  if (publication.schemaVersion !== "swaputer-npm-publication/2") fail("unsupported npm publication schema");
+  if (publication.registry !== registry) fail("npm release and publication registries differ");
+  if (publication.status !== "published") fail("npm publication evidence must have published status");
+  if (!Array.isArray(publication.packages) || publication.packages.length === 0) fail("npm publication evidence has no packages");
+  const identities = new Set();
+  for (const [index, rawPackage] of publication.packages.entries()) {
+    const entry = object(rawPackage, `publication.packages[${index}]`);
+    const name = string(entry.name, `publication.packages[${index}].name`);
+    const version = string(entry.version, `publication.packages[${index}].version`);
+    if (!PACKAGE_NAME.test(name) || !ALLOWED_PACKAGE_NAMES.has(name)) fail(`published package is not allowlisted: ${name}`);
+    if (!SEMVER.test(version)) fail(`invalid published package version: ${version}`);
+    if (entry.status !== "published") fail(`publication entry is not published: ${name}@${version}`);
+    const identity = `${name}@${version}`;
+    if (identities.has(identity)) fail(`duplicate published package identity: ${identity}`);
+    identities.add(identity);
+  }
+  return identities;
+}
+
+export function assertNoPublishedIdentityReuse(config, rawPublication) {
+  const published = validatePublication(rawPublication, config.registry);
+  const collisions = config.packages
+    .map((entry) => `${entry.name}@${entry.version}`)
+    .filter((identity) => published.has(identity))
+    .sort();
+  if (collisions.length > 0) {
+    fail(`refusing to prepare already-published npm identities: ${collisions.join(", ")}; create a new release config with unused versions`);
+  }
+  if (config.status !== "prepared-not-published") {
+    fail("only a prepared-not-published release plan may create npm tarballs");
+  }
+}
+
+export function assertRegistryIdentitiesUnused(config, runner = spawnSync) {
+  for (const entry of config.packages) {
+    const identity = `${entry.name}@${entry.version}`;
+    const result = runner("npm", ["view", identity, "version", "--json", "--registry", config.registry], {
+      cwd: repositoryRoot,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"]
+    });
+    if (result.status === 0) fail(`refusing to prepare npm identity that already exists in the registry: ${identity}`);
+    const diagnostic = `${result.stdout ?? ""}\n${result.stderr ?? ""}`;
+    if (!/(?:E404|404 Not Found)/i.test(diagnostic)) fail(`npm registry availability check failed for ${identity}`);
+  }
 }
 
 function run(command, arguments_, cwd, capture = false) {
@@ -262,7 +323,10 @@ async function preparePackage(entry, config, stagingRoot, output, skipTests) {
 
 async function main() {
   const options = parseArguments(process.argv.slice(2));
-  const config = validateConfig(JSON.parse(await readFile(configPath, "utf8")));
+  const config = validateConfig(JSON.parse(await readFile(options.config, "utf8")));
+  const publication = JSON.parse(await readFile(publicationPath, "utf8"));
+  assertNoPublishedIdentityReuse(config, publication);
+  assertRegistryIdentitiesUnused(config);
   if (options.output === defaultOutput) await rm(options.output, { recursive: true, force: true });
   await mkdir(options.output, { recursive: true });
   const existingOutput = await readdir(options.output);
@@ -289,7 +353,9 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  process.stderr.write(`npm package preparation failed: ${error instanceof Error ? error.message : String(error)}\n`);
-  process.exitCode = 1;
-});
+if (process.argv[1] !== undefined && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch((error) => {
+    process.stderr.write(`npm package preparation failed: ${error instanceof Error ? error.message : String(error)}\n`);
+    process.exitCode = 1;
+  });
+}

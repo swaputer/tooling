@@ -49,6 +49,8 @@ jobs:
         run: npm test --prefix tooling/tinysol
       - name: Test CLI
         run: npm test --prefix tooling/cli
+      - name: Test npm release integrity guard
+        run: node --test script/*.test.mjs
       - name: Test deployment manifest
         run: npm test --prefix tooling/deployment-manifest
       - name: Test reference indexer

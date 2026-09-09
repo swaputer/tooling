@@ -4,8 +4,9 @@ import { inspectTransaction } from "./inspect.js";
 import { jsonStringify } from "./json.js";
 import type { RpcTransport } from "./rpc.js";
 import type { SwaputerDeployment } from "./types.js";
+import { CLI_VERSION } from "./version.js";
 
-export const CLI_VERSION = "0.1.2";
+export { CLI_VERSION } from "./version.js";
 
 export const BROWSER_HELP = Object.freeze([
   "Swaputer Terminal — read-only transaction verification",

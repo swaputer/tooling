@@ -12,17 +12,30 @@ as command-line arguments, printed in output or included in structured errors.
 ## Installation
 
 ```sh
-npm install --global @swaputer-labs/cli
+npm install --global @swaputer-labs/cli@0.1.2
 swaputer --help
 ```
 
 It can also be run without a global installation:
 
 ```sh
-npx @swaputer-labs/cli --help
+npx @swaputer-labs/cli@0.1.2 --help
 ```
 
 Requires Node.js 22 or newer.
+
+## Published and source versions
+
+The public npm package is currently `@swaputer-labs/cli@0.1.2`. That immutable
+tarball provides the Node.js CLI and root library export only; it does not
+provide `@swaputer-labs/cli/browser`. Its `swaputer --version` output says
+`0.1.1` because of a historical display-only defect in the published binary;
+the npm package manifest and registry integrity identify it as `0.1.2`.
+
+This private source tree is the unreleased `0.1.3-dev.0` line. It fixes the
+displayed version and adds a browser-safe entry point for source-integrated
+applications. Do not document or install that browser subpath as an npm API
+until a newly versioned package has been reviewed and published.
 
 ## Inspect a transaction
 

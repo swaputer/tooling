@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 import { keccak_256 } from "@noble/hashes/sha3";
@@ -113,6 +114,10 @@ test("online inspection verifies chain and historical Kernel code without exposi
 
 test("CLI decodes a receipt and returns stable usage failures", () => {
   const cli = new URL("../src/cli.js", import.meta.url);
+  const manifest = JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf8")) as { version: string };
+  const version = spawnSync(process.execPath, [fileURLToPath(cli), "--version"], { encoding: "utf8" });
+  assert.equal(version.status, 0, version.stderr);
+  assert.equal(version.stdout.trim(), manifest.version);
   const decoded = spawnSync(process.execPath, [fileURLToPath(cli), "decode-receipt", PAYLOAD, "--json"], { encoding: "utf8" });
   assert.equal(decoded.status, 0, decoded.stderr);
   assert.equal(JSON.parse(decoded.stdout).worldExecution.executedBytes, 1);

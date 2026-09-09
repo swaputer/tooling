@@ -11,6 +11,12 @@ The current public package identities are `@swaputer-labs/receipt-codec@0.1.2`,
 `@swaputer-labs/tinysol@0.3.2`, and `@swaputer-labs/cli@0.1.2`; the former
 `@swaputer/*` publications remain only in the immutable withdrawal record.
 
+The public CLI `0.1.2` is the Node.js command/library recorded in the npm
+publication evidence; it does not expose `@swaputer-labs/cli/browser`. The
+browser-safe entry point on `main` belongs to the private `0.1.3-dev.0` source
+line and is not currently available from npm. This distinction prevents a new
+source tree from being mistaken for the already-published `0.1.2` tarball.
+
 ## Source layout
 
 - `tooling/tinysol` — compiler, assembler, simulator, fixtures, and programs.
@@ -33,6 +39,7 @@ npm ci --prefix tooling/tinysol
 npm test --prefix tooling/tinysol
 npm ci --prefix tooling/cli
 npm test --prefix tooling/cli
+node --test script/*.test.mjs
 ```
 
 This repository was split from private monorepo commit
