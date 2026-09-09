@@ -10,10 +10,11 @@ transactions or deploy contracts.
 ## Installation
 
 ```sh
-npm install @swaputer-labs/tinysol
+npm install @swaputer-labs/tinysol@0.3.2
 ```
 
-Requires Node.js 22 or newer and uses ES modules.
+The current public release is `0.3.2`. It requires Node.js 22 or newer and uses
+ES modules.
 
 ## Compile a contract
 
@@ -74,13 +75,13 @@ syntax and artifact types.
 Run without installing globally:
 
 ```sh
-npx @swaputer-labs/tinysol --help
+npx @swaputer-labs/tinysol@0.3.2 --help
 ```
 
 Or install the `tinysol` command:
 
 ```sh
-npm install --global @swaputer-labs/tinysol
+npm install --global @swaputer-labs/tinysol@0.3.2
 tinysol --help
 ```
 

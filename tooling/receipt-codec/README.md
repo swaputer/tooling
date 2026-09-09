@@ -7,10 +7,11 @@ its canonical binary form.
 ## Installation
 
 ```sh
-npm install @swaputer-labs/receipt-codec
+npm install @swaputer-labs/receipt-codec@0.1.2
 ```
 
-Requires Node.js 20 or newer and uses ES modules.
+The current public release is `0.1.2`. It requires Node.js 20 or newer and uses
+ES modules.
 
 ## Decode a Kernel receipt
 
