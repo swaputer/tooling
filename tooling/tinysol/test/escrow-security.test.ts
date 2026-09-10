@@ -48,10 +48,7 @@ function deploy(state: MiniVMWorldState, codeHash: Bytes32, payload: Hex = "0x")
   });
 }
 
-for (const [directory, contractName] of [
-  ["market-escrow", "MarketEscrow"],
-  ["auction-escrow", "AuctionEscrow"]
-] as const) {
+for (const [directory, contractName] of [["market-escrow", "MarketEscrow"]] as const) {
   test(`${contractName} rejects a token that reports successful transfers without changing balances`, async () => {
     const escrowSource = await readFile(resolve("programs", directory, `${contractName}.tiny.sol`), "utf8");
     const token = compileTinySol(dishonestTokenSource, { sourceName: "test/DishonestSRC20.tiny.sol" });

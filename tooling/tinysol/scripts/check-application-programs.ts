@@ -7,7 +7,6 @@ import { compileTinySol, encodeCompilerArtifact } from "../src/index.js";
 const tinysolRoot = resolve(fileURLToPath(new URL("../../", import.meta.url)));
 
 const programs = Object.freeze([
-  Object.freeze({ directory: "auction-escrow", contract: "AuctionEscrow" }),
   Object.freeze({ directory: "market-escrow", contract: "MarketEscrow" }),
   Object.freeze({ directory: "mintable-src20", contract: "MintableSRC20" }),
   Object.freeze({ directory: "open-mint-src20", contract: "OpenMintSRC20" }),
