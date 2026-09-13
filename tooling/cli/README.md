@@ -3,7 +3,7 @@
 Read-only command-line verification for Swaputer SVM transactions. The CLI
 fetches an Ethereum receipt through an explicitly named RPC environment
 variable, verifies the configured chain, canonical containing block and
-transaction envelope, finalized head, at least 12 observed confirmations,
+transaction envelope, finalized head, at least one observed confirmation,
 historical Kernel runtime code hash, World ID, `Events(bytes32,uint64,bytes)`
 envelope and complete `VMReceiptV1`, then emits a human summary or JSON.
 

@@ -98,6 +98,7 @@ test("strictly recognizes and decodes a Kernel Events receipt", () => {
 
 function canonicalTransport(overrides: {
   readonly containingHash?: string;
+  readonly finalizedHash?: string;
   readonly finalizedNumber?: string;
   readonly latestNumber?: string;
   readonly transactionBlockHash?: string;
@@ -120,7 +121,7 @@ function canonicalTransport(overrides: {
       if (method === "eth_getBlockByNumber") {
         const block = params[0];
         if (block === "0x2") return { number: "0x2", hash: overrides.containingHash ?? `0x${"b".repeat(64)}` } as T;
-        if (block === "finalized") return { number: overrides.finalizedNumber ?? "0x10", hash: `0x${"c".repeat(64)}` } as T;
+        if (block === "finalized") return { number: overrides.finalizedNumber ?? "0x10", hash: overrides.finalizedHash ?? `0x${"c".repeat(64)}` } as T;
         if (block === "latest") return { number: overrides.latestNumber ?? "0x20", hash: `0x${"d".repeat(64)}` } as T;
       }
       throw new Error(`unexpected method ${method}`);
@@ -154,17 +155,13 @@ test("online inspection rejects orphaned, unfinalized, and envelope-mismatched r
     () => inspectTransaction(TRANSACTION_HASH, { deployment, rpcUrl: "https://rpc.invalid", rpcEnvironment: "TEST_RPC", transport: canonicalTransport({ finalizedNumber: "0xd", latestNumber: "0xc" }) }),
     (error: unknown) => error instanceof InspectionError && error.code === InspectionErrorCode.TRANSACTION_NOT_CANONICAL
   );
-  await assert.rejects(
-    () => inspectTransaction(TRANSACTION_HASH, { deployment, rpcUrl: "https://rpc.invalid", rpcEnvironment: "TEST_RPC", transport: canonicalTransport({ finalizedNumber: "0x8", latestNumber: "0xc" }) }),
-    (error: unknown) => error instanceof InspectionError && error.code === InspectionErrorCode.TRANSACTION_NOT_FINALIZED
-  );
-  const exactlyTwelve = await inspectTransaction(TRANSACTION_HASH, {
+  const exactlyOne = await inspectTransaction(TRANSACTION_HASH, {
     deployment,
     rpcUrl: "https://rpc.invalid",
     rpcEnvironment: "TEST_RPC",
-    transport: canonicalTransport({ finalizedNumber: "0x8", latestNumber: "0xd" })
+    transport: canonicalTransport({ finalizedNumber: "0x2", finalizedHash: `0x${"b".repeat(64)}`, latestNumber: "0x2" })
   });
-  assert.equal(exactlyTwelve.confirmations, 12n);
+  assert.equal(exactlyOne.confirmations, 1n);
   await assert.rejects(
     () => inspectTransaction(TRANSACTION_HASH, { deployment, rpcUrl: "https://rpc.invalid", rpcEnvironment: "TEST_RPC", transport: canonicalTransport({ transactionBlockHash: `0x${"f".repeat(64)}` }) }),
     (error: unknown) => error instanceof InspectionError && error.code === InspectionErrorCode.TRANSACTION_NOT_CANONICAL

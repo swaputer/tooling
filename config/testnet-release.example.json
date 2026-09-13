@@ -71,7 +71,7 @@
     "maximumProjectNativeWei": "1000000000000000000",
     "thirdPartyFundsAllowed": false
   },
-  "finality": { "confirmations": 24, "maximumReorgDepth": 128, "pollIntervalSeconds": 12 },
+  "finality": { "confirmations": 1, "maximumReorgDepth": 128, "pollIntervalSeconds": 12 },
   "rpcEnvironmentVariables": ["SWAPVM_TESTNET_RPC_PRIMARY", "SWAPVM_TESTNET_RPC_SECONDARY"],
   "manifestPublisher": "MANIFEST_PUBLISHER_TBD",
   "containsPlaceholders": true

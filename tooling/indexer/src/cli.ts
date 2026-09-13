@@ -199,7 +199,7 @@ async function main(): Promise<void> {
       chainId: unsigned(required(options, "--chain-id"), "--chain-id"),
       kernelAddress: normalizeAddress(required(options, "--kernel")),
       startBlock: unsigned(options.get("--start-block") ?? "0", "--start-block"),
-      confirmations: unsigned(options.get("--confirmations") ?? "12", "--confirmations"),
+      confirmations: unsigned(options.get("--confirmations") ?? "1", "--confirmations"),
       chunkSize: unsigned(options.get("--chunk-size") ?? "1000", "--chunk-size"),
       maxReorgDepth: unsigned(options.get("--max-reorg-depth") ?? "64", "--max-reorg-depth"),
       ...(options.has("--target-block")

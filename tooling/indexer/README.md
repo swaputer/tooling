@@ -40,7 +40,7 @@ node dist/src/cli.js sync \
   --kernel 0x0000000000000000000000000000000000000001 \
   --start-block 0 \
   --target-block 1000000 \
-  --confirmations 12 \
+  --confirmations 1 \
   --chunk-size 1000 \
   --max-reorg-depth 64 \
   --db ./swapvm.sqlite

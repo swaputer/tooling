@@ -117,7 +117,7 @@ function ErrorInspector({ code, transactionHash, retry }: { code: string; transa
     },
     [InspectionErrorCode.TRANSACTION_NOT_FINALIZED]: {
       title: "Transaction not finalized",
-      body: "The transaction has not reached the finalized chain head and 12-confirmation safety floor yet."
+      body: "The transaction has not reached the finalized chain head and one-confirmation policy yet."
     },
     [InspectionErrorCode.UNSUPPORTED_DEPLOYMENT]: {
       title: "Unknown deployment",

@@ -18,7 +18,7 @@ const HEX_BYTES = /^0x(?:[0-9a-fA-F]{2})*$/;
 const QUANTITY = /^0x(?:0|[1-9a-fA-F][0-9a-fA-F]*)$/;
 const ADDRESS = /^0x[0-9a-fA-F]{40}$/;
 const BYTES32 = /^0x[0-9a-fA-F]{64}$/;
-export const MINIMUM_INSPECTION_CONFIRMATIONS = 12n;
+export const MINIMUM_INSPECTION_CONFIRMATIONS = 1n;
 
 function normalizeHex(value: string): Hex {
   return value.toLowerCase() as Hex;

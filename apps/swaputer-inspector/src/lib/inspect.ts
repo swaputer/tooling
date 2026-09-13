@@ -15,7 +15,7 @@ import {
 } from "./types";
 
 export const EVENTS_TOPIC = "0x602812b230e5dc416bb4163643fb95093808246664e5b824bf2849ffb8c33d04";
-export const MINIMUM_INSPECTION_CONFIRMATIONS = 12n;
+export const MINIMUM_INSPECTION_CONFIRMATIONS = 1n;
 const QUANTITY = /^0x(?:0|[1-9a-fA-F][0-9a-fA-F]*)$/;
 const ADDRESS = /^0x[0-9a-fA-F]{40}$/;
 const BYTES32 = /^0x[0-9a-fA-F]{64}$/;
