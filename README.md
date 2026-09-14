@@ -8,7 +8,7 @@ tools.
 The npm packages are publicly available while every source package remains
 `private: true`; running package preparation alone does not publish anything.
 The current public package identities are `@swaputer-labs/receipt-codec@0.1.2`,
-`@swaputer-labs/tinysol@0.3.2`, and `@swaputer-labs/cli@0.1.2`; the former
+`@swaputer-labs/tinysol@0.4.0`, and `@swaputer-labs/cli@0.1.2`; the former
 `@swaputer/*` publications remain only in the immutable withdrawal record.
 
 The public CLI `0.1.2` is the Node.js command/library recorded in the npm
