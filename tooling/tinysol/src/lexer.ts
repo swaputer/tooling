@@ -1,14 +1,15 @@
 import { ToolchainErrorCode, fail } from "./errors.js";
-import { TINYSOL_LIMITS, type SourcePosition, type SourceSpan, type TinySolToken, type TinySolTokenKind } from "./compiler-types.js";
+import { TINYSOL_INTEGER_WIDTHS, TINYSOL_LIMITS, type SourcePosition, type SourceSpan, type TinySolToken, type TinySolTokenKind } from "./compiler-types.js";
 
 const KEYWORDS = new Set([
-  "contract", "interface", "constructor", "function", "event", "indexed", "returns", "view", "external", "internal", "mapping",
-  "uint256", "int256", "bool", "account", "address", "bytes32", "if", "else", "while", "for", "return",
-  "require", "revert", "emit", "true", "false", "call", "staticcall", "create"
+  "contract", "interface", "constructor", "function", "event", "error", "indexed", "returns", "view", "external", "internal", "mapping", "const", "enum", "struct",
+  ...TINYSOL_INTEGER_WIDTHS.flatMap((width) => [`uint${width}`, `int${width}`]), "bool", "account", "address", "bytes32", "bytes", "string", "if", "else", "while", "for", "break", "continue", "return",
+  "require", "revert", "emit", "delete", "true", "false", "call", "staticcall", "create"
 ]);
-const TWO = new Set(["=>", "==", "!=", "<=", ">=", "&&", "||", "<<", ">>"]);
+const THREE = new Set(["<<=", ">>="]);
+const TWO = new Set(["=>", "==", "!=", "<=", ">=", "&&", "||", "<<", ">>", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "++", "--"]);
 const ONE_OPERATORS = new Set(["=", "+", "-", "*", "/", "%", "<", ">", "!", "~", "&", "|", "^"]);
-const PUNCTUATION = new Set(["{", "}", "(", ")", "[", "]", ";", ",", "."]);
+const PUNCTUATION = new Set(["{", "}", "(", ")", "[", "]", ";", ",", ".", ":", "?"]);
 
 function position(offset: number, byteOffset: number, line: number, column: number): SourcePosition {
   return Object.freeze({ offset, byteOffset, line, column });
@@ -64,6 +65,24 @@ export function lexTinySol(source: string): readonly TinySolToken[] {
       continue;
     }
     const start = current();
+    if (char === '"' || char === "'") {
+      const quote = advance(); let value = ""; let closed = false;
+      while (offset < source.length) {
+        const item = source[offset] ?? "";
+        if (item === quote) { advance(); closed = true; break; }
+        if (item === "\n" || item === "\r") fail(ToolchainErrorCode.INVALID_LITERAL, { line: start.line, column: start.column, offset: start.byteOffset, details: { literal: "string" } });
+        if (item !== "\\") { value += advance(); continue; }
+        advance(); const escaped = source[offset] ?? "";
+        if (escaped === "n") { advance(); value += "\n"; continue; }
+        if (escaped === "r") { advance(); value += "\r"; continue; }
+        if (escaped === "t") { advance(); value += "\t"; continue; }
+        if (escaped === "\\" || escaped === '"' || escaped === "'") { value += advance(); continue; }
+        if (escaped === "x" && /^[0-9a-fA-F]{2}$/.test(source.slice(offset + 1, offset + 3))) { advance(); value += String.fromCharCode(Number.parseInt(source.slice(offset, offset + 2), 16)); advance(); advance(); continue; }
+        fail(ToolchainErrorCode.INVALID_LITERAL, { line, column, offset: byteOffset, details: { literal: "string-escape" } });
+      }
+      if (!closed) fail(ToolchainErrorCode.INVALID_LITERAL, { line: start.line, column: start.column, offset: start.byteOffset, details: { literal: "unterminated-string" } });
+      add("string", value, start); continue;
+    }
     if (/[A-Za-z_]/.test(char)) {
       let value = ""; while (offset < source.length && /[A-Za-z0-9_]/.test(source[offset] ?? "")) value += advance();
       add(KEYWORDS.has(value) ? "keyword" : "identifier", value, start); continue;
@@ -77,12 +96,16 @@ export function lexTinySol(source: string): readonly TinySolToken[] {
         const digits = value.length - 2;
         add(digits === 64 ? "bytes32" : digits === 40 ? "address" : "integer", value.toLowerCase(), start);
       } else {
-        while (offset < source.length && /[0-9]/.test(source[offset] ?? "")) value += advance();
+        while (offset < source.length && /[0-9_]/.test(source[offset] ?? "")) value += advance();
+        if (value.startsWith("_") || value.endsWith("_") || value.includes("__")) fail(ToolchainErrorCode.INVALID_LITERAL, { line: start.line, column: start.column });
+        value = value.replaceAll("_", "");
         add("integer", value, start);
       }
       continue;
     }
     if (code > 0x7f) fail(ToolchainErrorCode.NON_ASCII_IDENTIFIER, { line, column, offset: byteOffset, details: { codePoint: code } });
+    const triple = source.slice(offset, offset + 3);
+    if (THREE.has(triple)) { advance(); advance(); advance(); add("operator", triple, start); continue; }
     const pair = source.slice(offset, offset + 2);
     if (TWO.has(pair)) { advance(); advance(); add("operator", pair, start); continue; }
     if (ONE_OPERATORS.has(char)) { advance(); add("operator", char, start); continue; }

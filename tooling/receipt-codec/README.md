@@ -56,6 +56,14 @@ encodeVMReceiptHex(receipt: VMReceiptV1Input | VMReceiptV1): `0x${string}`
 The runtime has no third-party dependencies and performs no network or wallet
 operations.
 
+## TinySol compatibility
+
+`VMReceiptV1` is independent of TinySol source types. Programs compiled with the prepared TinySol
+`0.4.0` line may use bounded `string<N>`, `bytes<N>` and `T[<=N]`, but those values are lowered into
+ordinary program storage and static ABI words before execution. They do not change the outer receipt
+format, so the current public `receipt-codec@0.1.2` remains compatible and does not require a version
+bump for this language update.
+
 ## License
 
 MIT

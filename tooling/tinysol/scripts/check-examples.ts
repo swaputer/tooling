@@ -1,9 +1,10 @@
 import { readdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { compileTinySol } from "../src/codegen.js";
+import { compileTinySolProject } from "../src/project.js";
 
 const directory = resolve(process.cwd(), "examples");
-const files = (await readdir(directory, { recursive: true })).filter((file) => file.endsWith(".tiny.sol")).sort();
+const files = (await readdir(directory, { recursive: true })).filter((file) => file.endsWith(".tiny.sol") && !file.startsWith("multifile-token/")).sort();
 if (files.length < 13) throw new Error("EXAMPLE_SET_MISMATCH");
 const results = [];
 for (const file of files) {
@@ -11,4 +12,6 @@ for (const file of files) {
   const result = compileTinySol(source, { sourceName: `examples/${file}` });
   results.push({ file, codeHash: result.codeHash, codeLength: result.code.length, abiHash: result.abi.abiHash, descriptorHash: result.descriptorHash });
 }
+const multi = await compileTinySolProject({ projectRoot: resolve(directory, "multifile-token"), entry: "MultiFileToken.tiny.sol" });
+results.push({ file: "multifile-token/MultiFileToken.tiny.sol", codeHash: multi.codeHash, codeLength: multi.code.length, abiHash: multi.abi.abiHash, descriptorHash: multi.descriptorHash });
 process.stdout.write(`${JSON.stringify(results)}\n`);

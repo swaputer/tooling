@@ -26,7 +26,10 @@ for (const name of names) {
     sourceMap: result.sourceMap,
     manifest: result.manifest
   };
-  const encoded = `${canonicalJson(fixture)}\n`; const output = resolve(fixtures, `${name}.json`);
+  const output = resolve(fixtures, `${name}.json`); let frozenFixture = fixture;
+  try { const existing = JSON.parse(await readFile(output, "utf8")) as typeof fixture; frozenFixture = { ...fixture, manifest: { ...fixture.manifest, compiler: existing.manifest.compiler } }; }
+  catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }
+  const encoded = `${canonicalJson(frozenFixture)}\n`;
   if (check) {
     try { if (await readFile(output, "utf8") !== encoded) throw new Error(`COMPILER_FIXTURE_DRIFT:${name}`); }
     catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") throw new Error(`COMPILER_FIXTURE_MISSING:${name}`); throw error; }

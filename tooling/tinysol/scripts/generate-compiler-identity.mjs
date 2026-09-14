@@ -9,6 +9,7 @@ const workspace = resolve(here, "..");
 const check = process.argv.includes("--check");
 const compilerFiles = [
   "src/compiler-artifacts.ts", "src/compiler-types.ts", "src/codegen.ts", "src/lexer.ts", "src/parser.ts", "src/semantic.ts",
+  "src/extensions.ts", "src/mapping-field-lowering.ts", "src/bounded-lowering.ts", "src/struct-lowering.ts", "src/array-lowering.ts", "src/project.ts", "src/bindings.ts", "src/formatter.ts",
   "src/abi.ts", "src/assembler.ts", "src/bytes.ts", "src/errors.ts", "src/isa.ts", "src/package.ts", "src/validator.ts", "package.json"
 ].sort();
 

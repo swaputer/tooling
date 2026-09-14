@@ -7,19 +7,21 @@ Swaputer publishes three public npm packages while keeping every source workspac
 - `@swaputer-labs/tinysol@0.3.2` — TinySol compiler, assembler, simulator and offline CLI.
 - `@swaputer-labs/cli@0.1.2` — read-only on-chain SVM transaction inspection and receipt decoding.
 
+The unpublished TinySol `0.4.0` preparation is isolated in
+`release/npm/tinysol-0.4.0.json` and `artifacts/npm-tinysol-0.4.0/`; it does not alter the historical
+three-package publication record below. `receipt-codec@0.1.2` requires no format change for bounded
+TinySol values, and the private CLI source remains `0.1.3-dev.0` until a separate release is planned.
+
 The public CLI `0.1.2` has only its Node.js root export. It does not contain the
 `./browser` export now present on the private `0.1.3-dev.0` source line. The
 published binary also prints `0.1.1` for `--version`; that is a historical
 display-only defect, not permission to replace or republish `0.1.2`. Registry
 metadata and the recorded integrity hash remain the authoritative identity.
 
-`0.3.2` is the TinySol npm package version. The assembler/build-manifest
-toolchain identity is `@swaputer-labs/tinysol@0.1.0`, preserving its independent
-manifest version. The compiler semantic version remains `0.2.0-experimental`
-because this patch changes public documentation and package metadata, not the
-language or code-generation semantics. The reproducibility source fingerprint
-and dependency-lock hash are regenerated for the new package metadata while
-compiled program bytecode hashes remain unchanged.
+The npm package, language, compiler, and ISA versions are independent identities. TinySol `0.4.0`
+adds language v1.1 source semantics while retaining `ProgramPackageV1` and SwapVM ISA v2. Its
+compiler source fingerprint and dependency-lock hash are regenerated, while the `legacy-v1`
+compatibility corpus proves that pre-extension sources retain exact package bytes and artifacts.
 
 The source manifests are deliberately not publishable. Public manifests are
 generated in a temporary directory from `release/npm/packages.json`, and only an

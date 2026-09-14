@@ -17,16 +17,27 @@ export function buildTinySolAbi(program: TinySolProgram): TinySolAbi {
   });
   const constructor = tinySolSignature("constructor", contract.constructor?.kind === "ConstructorDeclaration" ? contract.constructor.parameters.map((parameter) => parameter.type.name) : []);
   const events = Object.freeze(contract.events.map((event) => tinySolSignature(event.name, event.parameters.map((parameter) => parameter.type.name))));
-  const canonicalObject = { format: "TinySolABI", version: 1, contract: contract.name, constructor, functions, events };
+  const errors = Object.freeze(contract.errors.map((error) => { const inputs = Object.freeze(error.parameters.map((parameter) => parameter.type.name)); const signature = tinySolSignature(error.name, inputs); return Object.freeze({ name: error.name, signature, selector: functionSelector(signature), inputs }); }));
+  const canonicalObject = { format: "TinySolABI", version: 1, contract: contract.name, constructor, functions, events, ...(errors.length === 0 ? {} : { errors }) };
   const abiCanonical = canonicalJson(canonicalObject);
   return Object.freeze({ ...canonicalObject, format: "TinySolABI" as const, version: 1 as const, functions: Object.freeze(functions), events, abiCanonical, abiHash: exactUtf8AbiHash(abiCanonical) });
 }
 
 export function buildStorageLayout(program: TinySolProgram): TinySolStorageLayout {
+  let slotCursor = 0;
   const items = program.contract.stateVariables.map((state, declarationIndex) => {
-    if (state.type.kind === "ScalarType") return Object.freeze({ name: state.name, type: state.type.name, declarationIndex, slot: word(BigInt(declarationIndex)) });
+    if (state.type.kind === "ScalarType" && state.type.arrayLength !== undefined) {
+      const slot = word(BigInt(slotCursor)); slotCursor += state.type.arrayLength; const dimensions = state.type.arrayDimensions;
+      const type = dimensions === undefined ? `${state.type.name}[${state.type.arrayLength}]` : `${state.type.name}${[...dimensions].reverse().map((length) => `[${length}]`).join("")}`;
+      return Object.freeze({ name: state.name, type, declarationIndex, slot, elementType: state.type.name, length: state.type.arrayLength, ...(dimensions === undefined ? {} : { dimensions }) });
+    }
+    if (state.type.kind === "ScalarType") { const slot = word(BigInt(slotCursor)); slotCursor += 1; return Object.freeze({ name: state.name, type: state.type.name, declarationIndex, slot }); }
+    slotCursor += 1;
     const domain = hashText(`TinySol.storage.mapping.v1:${program.contract.name}:${state.name}:${declarationIndex}`);
-    return Object.freeze({ name: state.name, type: `mapping(${state.type.keyType.name}=>${state.type.valueType.name})`, declarationIndex, namespace: domain, keyType: state.type.keyType.name, valueType: state.type.valueType.name });
+    const valueSuffix = state.type.valueArrayDimensions === undefined
+      ? state.type.valueArrayLength === undefined ? "" : `[${state.type.valueArrayLength}]`
+      : [...state.type.valueArrayDimensions].reverse().map((length) => `[${length}]`).join("");
+    return Object.freeze({ name: state.name, type: `mapping(${state.type.keyType.name}=>${state.type.valueType.name}${valueSuffix})`, declarationIndex, namespace: domain, keyType: state.type.keyType.name, valueType: state.type.valueType.name, ...(state.type.valueArrayLength === undefined ? {} : { length: state.type.valueArrayLength, ...(state.type.valueArrayDimensions === undefined ? {} : { dimensions: state.type.valueArrayDimensions }), nestedMappingScheme: "keccak256(keccak256(domain,key),index)" as const }) });
   });
   const base = { format: "TinySolStorageLayout" as const, version: 1 as const, contract: program.contract.name, scalarPacking: "none" as const, mappingScheme: "keccak256(domain,key)" as const, items: Object.freeze(items) };
   return Object.freeze({ ...base, hash: hashText(canonicalJson(base)) });

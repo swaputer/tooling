@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "swaputer-npm-release/1",
+  "status": "prepared-not-published",
+  "registry": "https://registry.npmjs.org",
+  "license": "MIT",
+  "packages": [
+    {
+      "sourceDirectory": "tooling/tinysol",
+      "name": "@swaputer-labs/tinysol",
+      "version": "0.4.0",
+      "description": "Deterministic TinySol compiler, simulator, CLI and frontend bindings for SwapVM.",
+      "keywords": ["swaputer", "svm", "tinysol", "compiler", "simulator", "bindings"],
+      "include": ["dist/src", "examples", "stdlib", "README.md"],
+      "dependencies": {
+        "@noble/curves": "1.8.1",
+        "@noble/hashes": "1.7.1"
+      }
+    }
+  ]
+}

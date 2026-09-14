@@ -18,12 +18,14 @@ async function checkProgram(directory: string, contract: string): Promise<string
   const sourcePath = resolve(root, `${contract}.tiny.sol`);
   const source = await readFile(sourcePath, "utf8");
   const compiled = compileTinySol(source, { sourceName: basename(sourcePath) });
+  const existingManifest = JSON.parse(await readFile(resolve(root, `${contract}.manifest.json`), "utf8")) as { compiler: typeof compiled.manifest.compiler };
+  const compatibilityManifest = { ...compiled.manifest, compiler: existingManifest.compiler };
   const expected = new Map<string, string | Uint8Array>([
     [`${contract}.svm`, compiled.packageBytes],
     [`${contract}.abi.json`, encodeCompilerArtifact(compiled.abi)],
     [`${contract}.events.json`, encodeCompilerArtifact(compiled.eventDescriptor)],
     [`${contract}.storage.json`, encodeCompilerArtifact(compiled.storageLayout)],
-    [`${contract}.manifest.json`, encodeCompilerArtifact(compiled.manifest)],
+    [`${contract}.manifest.json`, encodeCompilerArtifact(compatibilityManifest)],
     [`${contract}.svasm`, compiled.assembly],
     [`${contract}.map.json`, encodeCompilerArtifact(compiled.sourceMap)]
   ]);

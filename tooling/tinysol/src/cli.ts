@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { access, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import { constants } from "node:fs";
-import { resolve } from "node:path";
+import { relative, resolve, sep } from "node:path";
 import { canonicalJson } from "./abi.js";
 import { assemble } from "./assembler.js";
 import { bytesToHex } from "./bytes.js";
@@ -16,6 +16,9 @@ import { lexTinySol } from "./lexer.js";
 import { parseTinySol } from "./parser.js";
 import { simulateMiniVM } from "./simulator.js";
 import { estimateMiniVMFee } from "./estimator.js";
+import { compileTinySolProject } from "./project.js";
+import { generateTypeScriptBindings } from "./bindings.js";
+import { formatTinySol } from "./formatter.js";
 import type { EstimateMiniVMInput, SimulateMiniVMInput } from "./simulator-types.js";
 
 type Options = Readonly<Record<string, string | boolean>>;
@@ -31,7 +34,8 @@ Usage:
   tinysol hash --input <file>
   tinysol check --input <file>
   tinysol ast --input <file> --json
-  tinysol compile --input <file> --output <file> --abi <file> --events <file> --storage-layout <file> --manifest <file> --assembly <file> --source-map <file> [--force]
+  tinysol format --input <file> --output <file> [--force]
+  tinysol compile --input <file> [--project-root <dir>] --output <file> --abi <file> --events <file> --storage-layout <file> --manifest <file> --assembly <file> --source-map <file> [--bindings <file>] [--force]
   tinysol simulate --input <file>
   tinysol estimate --input <file>`;
 
@@ -167,6 +171,10 @@ async function main(args: readonly string[]): Promise<void> {
     process.stdout.write(json(parseTinySol(lexTinySol(source), { sourceName: input.split(/[\\/]/).pop() ?? "input.tiny.sol" })));
     return;
   }
+  if (command === "format") {
+    const options = parseOptions([subcommand, ...rest].filter((item): item is string => item !== undefined)); const input = required(options, "input"); const output = required(options, "output");
+    await safeWrite(input, output, formatTinySol(await readFile(input, "utf8")), options.force === true); process.stdout.write(json({ output: "written" })); return;
+  }
   if (command === "compile") {
     const options = parseOptions([subcommand, ...rest].filter((item): item is string => item !== undefined));
     const input = required(options, "input");
@@ -174,9 +182,11 @@ async function main(args: readonly string[]): Promise<void> {
       output: required(options, "output"), abi: required(options, "abi"), events: required(options, "events"),
       storage: required(options, "storage-layout"), manifest: required(options, "manifest"), assembly: required(options, "assembly"), map: required(options, "source-map")
     };
-    const source = await readFile(input, "utf8");
-    const result = compileTinySol(source, { sourceName: input.split(/[\\/]/).pop() ?? "input.tiny.sol" });
-    await atomicWriteSet(input, [
+    const projectRoot = options["project-root"];
+    const result = typeof projectRoot === "string"
+      ? await compileTinySolProject({ projectRoot, entry: relative(resolve(projectRoot), resolve(input)).split(sep).join("/") })
+      : compileTinySol(await readFile(input, "utf8"), { sourceName: input.split(/[\\/]/).pop() ?? "input.tiny.sol" });
+    const outputs: { path: string; data: string | Uint8Array }[] = [
       { path: paths.output, data: result.packageBytes },
       { path: paths.abi, data: encodeCompilerArtifact(result.abi) },
       { path: paths.events, data: encodeCompilerArtifact(result.eventDescriptor) },
@@ -184,8 +194,10 @@ async function main(args: readonly string[]): Promise<void> {
       { path: paths.manifest, data: encodeCompilerArtifact(result.manifest) },
       { path: paths.assembly, data: result.assembly },
       { path: paths.map, data: encodeCompilerArtifact(result.sourceMap) }
-    ], options.force === true);
-    process.stdout.write(json({ codeHash: result.codeHash, codeLength: result.code.length, outputs: 7 }));
+    ];
+    if (typeof options.bindings === "string") outputs.push({ path: options.bindings, data: generateTypeScriptBindings(result.abi, result.eventDescriptor) });
+    await atomicWriteSet(input, outputs, options.force === true);
+    process.stdout.write(json({ codeHash: result.codeHash, codeLength: result.code.length, outputs: outputs.length }));
     return;
   }
   if (command === "simulate" || command === "estimate") {

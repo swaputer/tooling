@@ -75,6 +75,14 @@ Exit codes are stable: `2` for input/usage, `3` for RPC configuration or
 transport, `4` for a missing transaction, `5` for a reverted transaction, `6`
 for a non-Swaputer transaction and `7` for verification failures.
 
+## TinySol compatibility
+
+The verifier authenticates the EVM transaction, Kernel, World, program identity and complete
+`VMReceiptV1`; it does not reinterpret TinySol source syntax or function return data. It can therefore
+verify transactions from programs compiled with the prepared TinySol `0.4.0` line, including bounded
+`string<N>`, `bytes<N>` and `T[<=N]`, without changing the public CLI `0.1.2` receipt boundary. Clients
+must still verify the deployed program code hash against the exact compiler artifact they intended.
+
 ## License
 
 MIT

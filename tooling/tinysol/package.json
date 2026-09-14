@@ -1,6 +1,6 @@
 {
   "name": "@swaputer-labs/tinysol",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "private": true,
   "type": "module",
   "bin": {
@@ -23,15 +23,19 @@
     "corpus:check": "node scripts/generate-differential-corpus.mjs --check",
     "compiler-identity:generate": "node scripts/generate-compiler-identity.mjs",
     "compiler-identity:check": "node scripts/generate-compiler-identity.mjs --check",
+    "compatibility:generate": "node dist/scripts/generate-compatibility-baseline.js",
+    "compatibility:check": "node --test dist/test/legacy-compatibility.test.js",
     "fixtures:generate": "node dist/scripts/generate-compiler-fixtures.js",
     "fixtures:check": "node dist/scripts/generate-compiler-fixtures.js --check",
+    "extensions:generate": "node dist/scripts/generate-extension-fixtures.js",
+    "extensions:check": "node dist/scripts/generate-extension-fixtures.js --check",
     "examples:check": "node dist/scripts/check-examples.js",
     "simulator:fixtures:generate": "node dist/scripts/generate-simulator-fixtures.js",
     "simulator:fixtures:check": "node dist/scripts/generate-simulator-fixtures.js --check",
     "programs:check": "node dist/scripts/check-application-programs.js",
-    "build": "npm run isa:check && npm run references:check && npm run corpus:check && npm run compiler-identity:check && tsc -p tsconfig.json && npm run programs:check",
+    "build": "npm run isa:check && npm run references:check && npm run corpus:check && npm run compiler-identity:check && tsc -p tsconfig.json && npm run examples:check && npm run extensions:check && npm run programs:check",
     "typecheck": "npm run isa:check && npm run references:check && npm run corpus:check && npm run compiler-identity:check && tsc -p tsconfig.json --noEmit",
-    "test": "npm run build && npm run fixtures:check && npm run simulator:fixtures:check && node --test dist/test/*.test.js",
+    "test": "npm run build && npm run fixtures:check && npm run simulator:fixtures:check && npm run compatibility:check && node --test dist/test/*.test.js",
     "audit": "npm audit"
   },
   "dependencies": {

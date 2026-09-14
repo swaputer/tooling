@@ -1,5 +1,8 @@
 # TinySol v1 language and compiler specification
 
+> This document freezes the pre-extension language. New compiler-only syntax is specified in
+> [TinySol language v1.1](./TINYSOL-V1.1-LANGUAGE.md); the v1 compatibility corpus remains byte-exact.
+
 TinySol v1 is an experimental, unaudited tooling language for producing SwapVM `ProgramPackageV1` bytecode. The original Stage 6 line targeted frozen ISA v1; the current local v1.2 extension targets ISA v2, which preserves v1 opcodes and adds three read-only transaction-context opcodes. This document specifies the compiler surface; it does not alter the frozen v1.1 files, package encoding, receipt format or historical deployed behavior.
 
 ## Lexical grammar and limits
