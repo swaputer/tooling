@@ -64,7 +64,7 @@ test("future public manifests link to public documentation without private repos
 
   const manifest = publicManifest(source, entry, "MIT");
 
-  assert.equal(manifest.homepage, "https://docs.swaputer.xyz/developers/tooling-packages");
+  assert.equal(manifest.homepage, "https://docs.swaputer.com/developers/tooling-packages");
   assert.equal(Object.hasOwn(manifest, "repository"), false);
   assert.equal(Object.hasOwn(manifest, "bugs"), false);
 });

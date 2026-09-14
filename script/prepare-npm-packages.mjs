@@ -250,7 +250,7 @@ export function publicManifest(source, entry, license) {
     version: entry.version,
     description: entry.description,
     license,
-    homepage: "https://docs.swaputer.xyz/developers/tooling-packages",
+    homepage: "https://docs.swaputer.com/developers/tooling-packages",
     keywords: entry.keywords,
     type: source.type,
     main: source.main,
