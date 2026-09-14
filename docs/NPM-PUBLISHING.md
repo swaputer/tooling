@@ -4,13 +4,14 @@ Swaputer publishes three public npm packages while keeping every source workspac
 `private: true`:
 
 - `@swaputer-labs/receipt-codec@0.1.2` — strict `VMReceiptV1` encoding and decoding.
-- `@swaputer-labs/tinysol@0.3.2` — TinySol compiler, assembler, simulator and offline CLI.
+- `@swaputer-labs/tinysol@0.4.0` — TinySol compiler, assembler, simulator and offline CLI.
 - `@swaputer-labs/cli@0.1.2` — read-only on-chain SVM transaction inspection and receipt decoding.
 
-The unpublished TinySol `0.4.0` preparation is isolated in
-`release/npm/tinysol-0.4.0.json` and `artifacts/npm-tinysol-0.4.0/`; it does not alter the historical
-three-package publication record below. `receipt-codec@0.1.2` requires no format change for bounded
-TinySol values, and the private CLI source remains `0.1.3-dev.0` until a separate release is planned.
+TinySol `0.4.0` was published separately on September 14, 2026. Its release plan and immutable
+registry evidence live in `release/npm/tinysol-0.4.0.json` and
+`release/npm/tinysol-0.4.0-publication.json`; they do not alter the historical three-package
+publication record below. `receipt-codec@0.1.2` requires no format change for bounded TinySol
+values, and the private CLI source remains `0.1.3-dev.0` until a separate release is planned.
 
 The public CLI `0.1.2` has only its Node.js root export. It does not contain the
 `./browser` export now present on the private `0.1.3-dev.0` source line. The
@@ -24,19 +25,24 @@ compiler source fingerprint and dependency-lock hash are regenerated, while the 
 compatibility corpus proves that pre-extension sources retain exact package bytes and artifacts.
 
 The source manifests are deliberately not publishable. Public manifests are
-generated in a temporary directory from `release/npm/packages.json`, and only an
+generated in a temporary directory from a reviewed release plan, and only an
 allowlisted set of built files is copied. This avoids accidental publication and
 keeps npm-only metadata outside the frozen TinySol compiler identity.
 
 The Swaputer repository uses the MIT License. This npm workflow has a separate,
-strict publication boundary: only the allowlisted files inside the three
-generated package archives are uploaded to npm. Contracts, applications,
+strict publication boundary: only the allowlisted files inside generated
+package archives are uploaded to npm. Contracts, applications,
 services, deployment sources and operational tooling are never copied into the
 npm staging directories.
 
 ## Current publication
 
-The `@swaputer-labs` packages were published on September 6, 2026. Exact
+TinySol `0.4.0` was published on September 14, 2026 from source commit `b357805`.
+Its exact registry timestamp, integrity, shasum, tarball SHA-256 and package boundary are recorded
+in `release/npm/tinysol-0.4.0-publication.json`.
+
+The earlier `@swaputer-labs` package set was published on September 6, 2026. Exact
+
 registry timestamps, integrity hashes, source commit and the package-only
 boundary are recorded in `release/npm/swaputer-labs-publication.json`:
 

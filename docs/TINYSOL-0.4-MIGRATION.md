@@ -71,15 +71,15 @@ separate manual action and is not performed by the release preparation scripts.
 
 ## Package coordination
 
-TinySol `0.4.0` is the only new package candidate required by this language change. The existing
+TinySol `0.4.0` is the only new package release required by this language change. The existing
 `@swaputer-labs/receipt-codec@0.1.2` remains compatible because bounded values do not alter
 `VMReceiptV1`. The existing `@swaputer-labs/cli@0.1.2` can verify transactions from `0.4.0`-compiled
 programs because it authenticates the Kernel receipt and program identity rather than interpreting
 source syntax. Its private `0.1.3-dev.0` browser work is a separate release concern.
 
-The public registry still records TinySol `0.3.2`. Until `0.4.0` is separately published and its
-registry integrity is recorded, install the prepared local tarball for testing and do not rewrite
-the immutable three-package publication evidence.
+The public registry records TinySol `0.4.0`. Its timestamp, tarball hash, registry shasum and
+integrity are recorded separately in `release/npm/tinysol-0.4.0-publication.json`; the immutable
+September 6 three-package publication evidence remains unchanged.
 
 ## Base Sepolia evidence
 

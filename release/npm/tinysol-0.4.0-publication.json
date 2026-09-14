@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "swaputer-npm-publication/2",
+  "registry": "https://registry.npmjs.org",
+  "scope": "@swaputer-labs",
+  "license": "MIT",
+  "status": "published",
+  "verifiedAt": "2026-09-14T04:18:12Z",
+  "sourceCommit": "b357805688b579cd19f65821019c6db902768574",
+  "publicationBoundary": "one-allowlisted-package-only",
+  "credentialsPersisted": false,
+  "excludedWorkspaceDirectories": [
+    "apps",
+    "audit",
+    "config",
+    "deployments",
+    "docs",
+    "reference",
+    "release",
+    "script",
+    "tooling/cli",
+    "tooling/deployment-manifest",
+    "tooling/indexer",
+    "tooling/receipt-codec"
+  ],
+  "packages": [
+    {
+      "name": "@swaputer-labs/tinysol",
+      "version": "0.4.0",
+      "url": "https://www.npmjs.com/package/@swaputer-labs/tinysol/v/0.4.0",
+      "publishedAt": "2026-09-14T04:18:12.183Z",
+      "status": "published",
+      "tarballSha256": "3eafc4092702bbbd0cfedd7da2d82fe988be591dc4b7f0c6a8e5b87dee98985e",
+      "registryShasum": "e788509d24a39a436428e6ea5339416f70a84823",
+      "registryIntegrity": "sha512-lSUhaZXwTv+CxUJ6t9ZEy7Ah6AGSHONRp+w70w8u4Jlk7qxn81QSek6ryjrdhnyQlC7D2F1dgJ4SJQq8/ZtlWQ==",
+      "fileCount": 155,
+      "unpackedSize": 1249437
+    }
+  ]
+}

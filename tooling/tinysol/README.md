@@ -23,20 +23,11 @@ byte-exact program packages plus canonical ABI, event and storage artifacts with
 ## Installation and release status
 
 ```sh
-npm install @swaputer-labs/tinysol@0.3.2
+npm install @swaputer-labs/tinysol@0.4.0
 ```
 
-The last recorded public release is `0.3.2`; it does not contain the language v1.1 additions below.
-This source tree and its reviewed tarball are prepared as `0.4.0`, but the preparation workflow does
-not publish it. Repository maintainers can test that exact candidate without implying registry
-availability:
-
-```sh
-npm install ./artifacts/npm-tinysol-0.4.0/swaputer-labs-tinysol-0.4.0.tgz
-```
-
-Both lines require Node.js 22 or newer and use ES modules. After `0.4.0` is separately published and
-verified, consumers may replace the local tarball path with the exact registry identity.
+The public `0.4.0` release contains the language v1.1 additions below. It requires Node.js 22 or
+newer and uses ES modules. Pin the exact version in reproducible application builds.
 
 ## Compile a contract
 
@@ -158,16 +149,16 @@ wallet. CLI compilation accepts `--bindings Token.bindings.ts` to write this eig
 
 ## CLI
 
-After installing the reviewed `0.4.0` tarball in a project, run its local CLI:
+After installing `0.4.0` in a project, run its local CLI:
 
 ```sh
 npx tinysol --help
 ```
 
-Or install that candidate tarball globally:
+Or install the published package globally:
 
 ```sh
-npm install --global ./artifacts/npm-tinysol-0.4.0/swaputer-labs-tinysol-0.4.0.tgz
+npm install --global @swaputer-labs/tinysol@0.4.0
 tinysol --help
 ```
 

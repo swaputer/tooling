@@ -9,7 +9,10 @@ import { fileURLToPath } from "node:url";
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const defaultConfigPath = resolve(repositoryRoot, "release/npm/packages.json");
-const publicationPath = resolve(repositoryRoot, "release/npm/swaputer-labs-publication.json");
+const publicationPaths = [
+  resolve(repositoryRoot, "release/npm/swaputer-labs-publication.json"),
+  resolve(repositoryRoot, "release/npm/tinysol-0.4.0-publication.json")
+];
 const defaultOutput = resolve(repositoryRoot, "artifacts/npm");
 const PACKAGE_SCOPE = "@swaputer-labs/";
 const PACKAGE_NAME = /^@swaputer-labs\/[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -157,7 +160,10 @@ function validatePublication(raw, registry) {
 }
 
 export function assertNoPublishedIdentityReuse(config, rawPublication) {
-  const published = validatePublication(rawPublication, config.registry);
+  const published = new Set();
+  for (const publication of Array.isArray(rawPublication) ? rawPublication : [rawPublication]) {
+    for (const identity of validatePublication(publication, config.registry)) published.add(identity);
+  }
   const collisions = config.packages
     .map((entry) => `${entry.name}@${entry.version}`)
     .filter((identity) => published.has(identity))
@@ -319,8 +325,10 @@ async function preparePackage(entry, config, stagingRoot, output, skipTests) {
 async function main() {
   const options = parseArguments(process.argv.slice(2));
   const config = validateConfig(JSON.parse(await readFile(options.config, "utf8")));
-  const publication = JSON.parse(await readFile(publicationPath, "utf8"));
-  assertNoPublishedIdentityReuse(config, publication);
+  const publications = await Promise.all(
+    publicationPaths.map(async (path) => JSON.parse(await readFile(path, "utf8")))
+  );
+  assertNoPublishedIdentityReuse(config, publications);
   assertRegistryIdentitiesUnused(config);
   if (options.output === defaultOutput) await rm(options.output, { recursive: true, force: true });
   await mkdir(options.output, { recursive: true });
