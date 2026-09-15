@@ -8,7 +8,7 @@ Regenerate them deterministically from the reviewed assembler source with:
 python3 script/generate_reference_programs.py
 ```
 
-`abiHash` is Keccak-256 of the exact UTF-8 bytes in `abiCanonical`. `codeHash` is Keccak-256 of the exact `package` bytes. `SwapVMReferenceRegistry` hard-codes both hashes and the interface ID, so matching only a claimed selector set is insufficient for verification.
+`abiHash` is Keccak-256 of the exact UTF-8 bytes in `abiCanonical`. `codeHash` is Keccak-256 of the exact `package` bytes. `SwaputerProgramRegistry` hard-codes both hashes and the interface ID, so matching only a claimed selector set is insufficient for verification.
 
 Published v1 interfaces:
 

@@ -278,8 +278,19 @@ export function predictFirstCreate(deployer: Address): Address {
 
 function same(left: string, right: string): boolean { return left.toLowerCase() === right.toLowerCase(); }
 
+const LEGACY_ARTIFACT_ALIASES: Readonly<Record<string, string>> = {
+  SwaputerWorldFactory: "SwapVMWorldFactory",
+  SwaputerAppRouter: "SwapVMRouter",
+  SwaputerToken: "SwapVMGasToken",
+  SwaputerKernel: "SwapVMKernel",
+  SwaputerHook: "SwapVMHook",
+  SwaputerWorldDeployer: "SwapVMWorldDeployer",
+  SwaputerProgramRegistry: "SwapVMReferenceRegistry"
+};
+
 function artifact(inventory: ArtifactInventory, name: string): ArtifactInventory["contracts"][string] {
-  const item = inventory.contracts[name];
+  const legacyName = LEGACY_ARTIFACT_ALIASES[name];
+  const item = inventory.contracts[name] ?? (legacyName === undefined ? undefined : inventory.contracts[legacyName]);
   if (item === undefined) throw new ReleaseError("ARTIFACT_MISMATCH", `$.artifacts.${name}`, "missing artifact inventory entry");
   return item;
 }
@@ -293,12 +304,12 @@ export function preflightTestnetRelease(rawConfig: unknown, observation: Release
   }
 
   const expectedArtifacts: readonly [keyof TestnetReleaseConfig["factory"]["artifactHashes"], string, "creationCodeHash" | "deployedRuntimeCodeHash"][] = [
-    ["factoryCreationCode", "SwapVMWorldFactory", "creationCodeHash"], ["factoryRuntime", "SwapVMWorldFactory", "deployedRuntimeCodeHash"],
-    ["routerRuntime", "SwapVMRouter", "deployedRuntimeCodeHash"], ["gasTokenCreationCode", "SwapVMGasToken", "creationCodeHash"],
-    ["gasTokenRuntime", "SwapVMGasToken", "deployedRuntimeCodeHash"], ["kernelCreationCode", "SwapVMKernel", "creationCodeHash"],
-    ["kernelRuntime", "SwapVMKernel", "deployedRuntimeCodeHash"], ["hookCreationCode", "SwapVMHook", "creationCodeHash"],
-    ["hookRuntime", "SwapVMHook", "deployedRuntimeCodeHash"], ["worldDeployerCreationCode", "SwapVMWorldDeployer", "creationCodeHash"],
-    ["worldDeployerRuntime", "SwapVMWorldDeployer", "deployedRuntimeCodeHash"], ["referenceRegistryRuntime", "SwapVMReferenceRegistry", "deployedRuntimeCodeHash"]
+    ["factoryCreationCode", "SwaputerWorldFactory", "creationCodeHash"], ["factoryRuntime", "SwaputerWorldFactory", "deployedRuntimeCodeHash"],
+    ["routerRuntime", "SwaputerAppRouter", "deployedRuntimeCodeHash"], ["gasTokenCreationCode", "SwaputerToken", "creationCodeHash"],
+    ["gasTokenRuntime", "SwaputerToken", "deployedRuntimeCodeHash"], ["kernelCreationCode", "SwaputerKernel", "creationCodeHash"],
+    ["kernelRuntime", "SwaputerKernel", "deployedRuntimeCodeHash"], ["hookCreationCode", "SwaputerHook", "creationCodeHash"],
+    ["hookRuntime", "SwaputerHook", "deployedRuntimeCodeHash"], ["worldDeployerCreationCode", "SwaputerWorldDeployer", "creationCodeHash"],
+    ["worldDeployerRuntime", "SwaputerWorldDeployer", "deployedRuntimeCodeHash"], ["referenceRegistryRuntime", "SwaputerProgramRegistry", "deployedRuntimeCodeHash"]
   ];
   for (const [field, contract, property] of expectedArtifacts) {
     if (!same(config.factory.artifactHashes[field], artifact(inventory, contract)[property])) {

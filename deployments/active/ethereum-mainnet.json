@@ -1,0 +1,69 @@
+{
+  "schemaVersion": "swaputer-active-release/1",
+  "release": {
+    "name": "swaputer-v1.2-mainnet",
+    "protocolVersion": "1.2",
+    "environment": "mainnet",
+    "deploymentSourceCommit": "25c29ac97fdd701cb57dae6163e83926adc7e740"
+  },
+  "network": {
+    "chainId": 1,
+    "name": "Ethereum Mainnet",
+    "explorerUrl": "https://etherscan.io"
+  },
+  "upstream": {
+    "uniswapV4": {
+      "poolManager": "0x000000000004444c5dc75cB358380D2e3dE08A90",
+      "positionManager": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
+      "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+      "universalRouter": "0x66a9893cC07D91D95644AEDD05D03f95e1dBA8Af",
+      "runtimeCodeHashes": {
+        "poolManager": "0x785f1014552b7ce7d5fb7d0c970ca60edee94fd00425d7ca21609acac7ce1293",
+        "positionManager": "0x77e36c08b19959a30dde46dec9abe6208e371ff2f56884a56fe1e1a53615528b",
+        "permit2": "0xc67d1657868aa5146eaf24fb879fb1fdec3d2d493b3683a61c9c2f4fb2851131",
+        "universalRouter": "0x6a5f46971b50c6e1b7eef97902311444e479d734e4f80ad88367783cf373fe7f"
+      },
+      "poolFee": 3000,
+      "tickSpacing": 60
+    }
+  },
+  "core": {
+    "worldId": "0x242ee39a165853ce39695feb1547bfa5228c367841a724ab9816bebef305dfbd",
+    "factory": "0x77E7AeCA1D83f823ACCcDDB1E3838c985Dbb16b4",
+    "router": "0xC9c786Ee02FeeAdC1DD0a3CD74Ec64B07C831B51",
+    "kernel": "0x67b591767B3DDc732944e122f99FF18dD78aa21e",
+    "hook": "0xB858093c6E514fE94DCEE0996e0ce1D17CA560CC",
+    "gasToken": "0xfcf4e38B9166CB1968DeA7D0321a7a0766bB8Cff",
+    "startBlock": 25977415,
+    "tradingLive": false
+  },
+  "programs": {
+    "defaultSrc20": {
+      "programId": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "codeHash": "0xaedd7bd1543d57afaeb94f6b46e28ba4c1ef7cdd2ad4affca011b17056036869"
+    },
+    "openMintSrc20CodeHash": "0xaedd7bd1543d57afaeb94f6b46e28ba4c1ef7cdd2ad4affca011b17056036869"
+  },
+  "runtimeCodeHashes": {
+    "factory": "0x58b1a803d4ea8e7eeaf617c57bab7de5ac4770c7f78f8b34c2a749ac4cf22514",
+    "router": "0x4a18a68ef1d8e9b91066ba8bb2459a939a2792f8a8b10e92adbb4923fb4cd605",
+    "kernel": "0xfc3af86a2371f6cfbb9e10c95767acea7c3e9ee4f953a418fcd5d97d6cb2b3c0",
+    "hook": "0x70b4a8d6bf8b7f6e0e86262ebc53f9ad8a348390692dabd452420bfebc3b373a",
+    "gasToken": "0xc814ed55ad36f756f4f2d91ed36ff9d7e559fc3e4b32c887495f4651919feff1"
+  },
+  "parameters": {
+    "vmInputWei": "1000000000000",
+    "sqrtPriceLimitX96": "4295128740",
+    "minNetTokenOut": "1"
+  },
+  "indexer": {
+    "confirmations": 1,
+    "reorgDepth": 64,
+    "backfillBatch": 1000,
+    "reconcileInterval": "20s"
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "manifestHash": "0x46b6391a816d5309dd7d690cb5fe840473cf30dd95847409586dd5921528bed3"
+  }
+}

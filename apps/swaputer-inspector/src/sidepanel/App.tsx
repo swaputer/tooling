@@ -81,7 +81,7 @@ function EmptyInspector({ onSubmit }: { onSubmit: (hash: string) => void }) {
     <main className="center-state">
       <div className="state-icon"><Search size={21} /></div>
       <h1>Inspect a transaction</h1>
-      <p>Open a Base Sepolia transaction page or paste its hash to check for a verified Swaputer execution.</p>
+      <p>Open an Ethereum Mainnet transaction page or paste its hash to check for a verified Swaputer execution.</p>
       <form className="hash-form" onSubmit={submit}>
         <input
           value={value}
@@ -133,7 +133,7 @@ function ErrorInspector({ code, transactionHash, retry }: { code: string; transa
     },
     [InspectionErrorCode.TRANSACTION_NOT_FOUND]: {
       title: "Transaction not found",
-      body: "The configured Base Sepolia RPCs do not currently return this transaction."
+      body: "The configured Ethereum Mainnet RPCs do not currently return this transaction."
     },
     [InspectionErrorCode.INVALID_TRANSACTION_HASH]: {
       title: "Invalid transaction hash",
@@ -189,9 +189,9 @@ function ReadyInspector({ result }: { result: InspectionResult }) {
       </section>
 
       <section className="amount-strip" aria-label="Execution token accounting">
-        <div><span>Token burned</span><strong>{formatToken(summary.tokenBurned)} SVMG</strong></div>
-        <div><span>Gross output</span><strong>{formatToken(summary.grossTokenOut)} SVMG</strong></div>
-        <div><span>Net output</span><strong>{formatToken(summary.netTokenOut)} SVMG</strong></div>
+        <div><span>Token burned</span><strong>{formatToken(summary.tokenBurned)} sPuter</strong></div>
+        <div><span>Gross output</span><strong>{formatToken(summary.grossTokenOut)} sPuter</strong></div>
+        <div><span>Net output</span><strong>{formatToken(summary.netTokenOut)} sPuter</strong></div>
       </section>
 
       <section className="records-section">

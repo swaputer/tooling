@@ -7,7 +7,7 @@ import type { Hex, SwaputerDeployment } from "./types.js";
 const ADDRESS = /^0x[0-9a-fA-F]{40}$/;
 const BYTES32 = /^0x[0-9a-fA-F]{64}$/;
 const DEPLOYMENTS_DIRECTORY = resolve(dirname(fileURLToPath(import.meta.url)), "../../deployments");
-const NETWORK_IDS = new Set(["base-sepolia"]);
+const NETWORK_IDS = new Set(["ethereum-mainnet", "base-sepolia"]);
 
 function fail(field: string): never {
   throw new InspectionError(InspectionErrorCode.INVALID_DEPLOYMENT, { field });

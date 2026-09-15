@@ -9,7 +9,7 @@ import { rpcUrlFromEnvironment } from "./rpc.js";
 import { CLI_VERSION } from "./version.js";
 
 const USAGE = `Usage:
-  swaputer inspect <transaction-hash> --rpc-env <ENV_NAME> [--network base-sepolia] [--json]
+  swaputer inspect <transaction-hash> --rpc-env <ENV_NAME> [--network ethereum-mainnet|base-sepolia] [--json]
   swaputer decode-receipt <0x-payload> [--json]
   swaputer --help
   swaputer --version`;
@@ -25,7 +25,7 @@ function parseInspect(arguments_: readonly string[]): ParsedInspect {
   const transactionHash = arguments_[0];
   if (transactionHash === undefined || transactionHash.startsWith("--")) throw new InspectionError(InspectionErrorCode.CLI_USAGE);
   let rpcEnvironment: string | undefined;
-  let network = "base-sepolia";
+  let network = "ethereum-mainnet";
   let networkSeen = false;
   let json = false;
   for (let index = 1; index < arguments_.length;) {

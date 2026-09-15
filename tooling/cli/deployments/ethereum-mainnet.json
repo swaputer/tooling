@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "swaputer-cli-deployment/1",
+  "id": "ethereum-mainnet",
+  "releaseName": "swaputer-v1.2-mainnet",
+  "protocolVersion": "1.2",
+  "chainId": 1,
+  "networkName": "Ethereum Mainnet",
+  "kernel": "0x67b591767B3DDc732944e122f99FF18dD78aa21e",
+  "kernelRuntimeCodeHash": "0xfc3af86a2371f6cfbb9e10c95767acea7c3e9ee4f953a418fcd5d97d6cb2b3c0",
+  "worldId": "0x242ee39a165853ce39695feb1547bfa5228c367841a724ab9816bebef305dfbd",
+  "sourceManifest": "deployments/active/ethereum-mainnet.json",
+  "sourceManifestHash": "0x46b6391a816d5309dd7d690cb5fe840473cf30dd95847409586dd5921528bed3"
+}

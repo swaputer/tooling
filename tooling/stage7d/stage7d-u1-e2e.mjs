@@ -160,14 +160,17 @@ async function indexSystem(system, databasePath) {
 
 async function buildManifest(system, actor) {
   const artifacts = JSON.parse(readFileSync(resolve(root, "audit/artifacts.json"), "utf8"));
+  const kernelArtifact = artifacts.contracts.SwaputerKernel ?? artifacts.contracts.SwapVMKernel;
+  const hookArtifact = artifacts.contracts.SwaputerHook ?? artifacts.contracts.SwapVMHook;
+  assert.ok(kernelArtifact && hookArtifact, "missing Kernel/Hook artifact inventory");
   const block = await rpc("eth_getBlockByNumber", [`0x${system.sealedBlock.toString(16)}`, false]);
   const references = Object.fromEntries(["SRC20", "SRC721", "SRC1155", "CPAMM"].map((name) => [name.toLowerCase(), JSON.parse(readFileSync(resolve(root, `reference/${name}-v1.json`), "utf8")).codeHash]));
   const manifest = finalizeManifest({
     schemaVersion: "1", protocolVersion: "1.1", release, chainId: 31337, worldConfigHash: system.configHash,
     poolManager: await codeIdentity(system.manager), factory: await codeIdentity(system.factory), referenceRegistry: await codeIdentity(system.registry), worldDeployer: await codeIdentity(system.worldDeployer),
     artifactStores: {
-      kernelCreationCode: { ...await codeIdentity(system.kernelStore), payloadHash: artifacts.contracts.SwapVMKernel.creationCodeHash },
-      hookCreationCode: { ...await codeIdentity(system.hookStore), payloadHash: artifacts.contracts.SwapVMHook.creationCodeHash }
+      kernelCreationCode: { ...await codeIdentity(system.kernelStore), payloadHash: kernelArtifact.creationCodeHash },
+      hookCreationCode: { ...await codeIdentity(system.hookStore), payloadHash: hookArtifact.creationCodeHash }
     },
     world: { poolKey: { currency0: "ETH", currency1: system.token, fee: system.fee, tickSpacing: system.spacing, hooks: system.hook }, worldId: system.worldId, byteGasPrice: system.byteGasPrice.toString(), maxByteGasLimit: 1_000_000, initialSqrtPriceX96: "79228162514264337593543950336", sealed: true, sealedAtBlock: Number(system.sealedBlock) },
     gasToken: { ...await codeIdentity(system.token), decimals: 18, initialSupply: "1000000000000000000000000000000000000", initialHolder: actor, distributionCommitment: system.distributionCommitment },

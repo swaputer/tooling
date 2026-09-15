@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import fixture from "../../../../tooling/receipt-codec/fixtures/unsigned-nop.json";
-import { BASE_SEPOLIA_DEPLOYMENT } from "./deployments";
+import { ETHEREUM_MAINNET_DEPLOYMENT } from "./deployments";
 import { decodeOuterPayload, inspectRpcReceipt, inspectTransaction, EVENTS_TOPIC } from "./inspect";
 import type { RpcTransport } from "./rpc";
 import { InspectionError, InspectionErrorCode, type RpcLog, type RpcReceipt } from "./types";
@@ -15,7 +15,7 @@ function encodeOuter(payload: string): string {
   return `0x${word(32n)}${word(BigInt(body.length / 2))}${body}${padding}`;
 }
 
-const deployment = Object.freeze({ ...BASE_SEPOLIA_DEPLOYMENT, worldId: fixture.worldId.toLowerCase() as `0x${string}` });
+const deployment = Object.freeze({ ...ETHEREUM_MAINNET_DEPLOYMENT, worldId: fixture.worldId.toLowerCase() as `0x${string}` });
 
 function log(overrides: Partial<RpcLog> = {}): RpcLog {
   return {

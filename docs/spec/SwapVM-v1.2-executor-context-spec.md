@@ -59,7 +59,7 @@ v1.2 does not add value transfer inside MiniVM, delegatecall, upgrades, pausing,
 
 ## Required implementation updates
 
-- `SwapVMKernel` sets `VM_VERSION = 2`, uses EIP-712 domain name `"Swaputer"` and version `"1.2"`, and passes `router`, `authorizedExecutor` and `recipient` into `VMContext`.
+- `SwaputerKernel` sets `VM_VERSION = 2`, uses EIP-712 domain name `"Swaputer"` and version `"1.2"`, and passes `router`, `authorizedExecutor` and `recipient` into `VMContext`.
 - `SwapVMMiniVM` accepts and executes opcodes `0xba..0xbc`.
 - TinySol exposes `tx.router`, `tx.executor` and `tx.recipient` as `address`.
 - The TypeScript MiniVM simulator and fee estimator carry the same context fields.

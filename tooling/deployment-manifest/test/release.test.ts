@@ -112,6 +112,29 @@ test("strict zero-value preflight verifies release identity, artifacts, stores, 
   assert.equal(result.checks.length, 11);
 });
 
+test("preflight accepts the renamed Swaputer core artifact inventory", () => {
+  const contracts = { ...inventory.contracts };
+  const names: ReadonlyArray<readonly [string, string]> = [
+    ["SwaputerWorldFactory", "SwapVMWorldFactory"],
+    ["SwaputerAppRouter", "SwapVMRouter"],
+    ["SwaputerToken", "SwapVMGasToken"],
+    ["SwaputerKernel", "SwapVMKernel"],
+    ["SwaputerHook", "SwapVMHook"],
+    ["SwaputerWorldDeployer", "SwapVMWorldDeployer"],
+    ["SwaputerProgramRegistry", "SwapVMReferenceRegistry"]
+  ];
+  for (const [currentName, legacyName] of names) {
+    const legacyArtifact = contracts[legacyName];
+    assert.ok(legacyArtifact);
+    contracts[currentName] = legacyArtifact;
+    delete contracts[legacyName];
+  }
+  const renamedInventory: ArtifactInventory = { ...inventory, contracts };
+
+  const { raw, observation } = fixture();
+  assert.equal(preflightTestnetRelease(raw, observation, renamedInventory).status, "PASS");
+});
+
 test("release policy fails closed for mainnet, false audit claims and placeholders", () => {
   const mainnet = fixture(); (mainnet.raw as { chainId: number }).chainId = 1;
   expectCode(() => validateTestnetReleaseConfig(mainnet.raw), "MAINNET_FORBIDDEN");

@@ -30,7 +30,7 @@ function capture(source: string, expression: RegExp, label: string): string {
 describe("generated constants stay bound to Solidity source", () => {
   it("matches Kernel IDs/signatures and MiniVM receipt limits", async () => {
     const repositoryRoot = resolve(process.cwd(), "../..");
-    const kernel = await readFile(resolve(repositoryRoot, "src/SwapVMKernel.sol"), "utf8");
+    const kernel = await readFile(resolve(repositoryRoot, "src/SwaputerKernel.sol"), "utf8");
     const miniVm = await readFile(resolve(repositoryRoot, "src/SwapVMMiniVM.sol"), "utf8");
     const spec = await readFile(resolve(repositoryRoot, "docs/spec/SwapVM-v1.1-frozen-spec.md"), "utf8");
 

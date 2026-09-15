@@ -83,5 +83,5 @@ until the unpacked extension/page is reloaded.
 
 ## Product naming
 
-User-facing copy uses `Swaputer`. The current protocol identifiers are `Events`,
-`VMReceiptV1`, and `SwapVMKernel`.
+User-facing copy uses `Swaputer`. The current Ethereum Mainnet protocol identifiers are `Events`,
+`VMReceiptV1`, and `SwaputerKernel`.

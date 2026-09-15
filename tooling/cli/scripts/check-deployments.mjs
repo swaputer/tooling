@@ -4,8 +4,8 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(fileURLToPath(new URL("../../../", import.meta.url)));
-const active = JSON.parse(await readFile(resolve(root, "deployments/active/base-sepolia.json"), "utf8"));
-const packaged = JSON.parse(await readFile(resolve(root, "tooling/cli/deployments/base-sepolia.json"), "utf8"));
+const active = JSON.parse(await readFile(resolve(root, "deployments/active/ethereum-mainnet.json"), "utf8"));
+const packaged = JSON.parse(await readFile(resolve(root, "tooling/cli/deployments/ethereum-mainnet.json"), "utf8"));
 
 assert.equal(packaged.releaseName, active.release.name);
 assert.equal(packaged.protocolVersion, active.release.protocolVersion);
@@ -16,4 +16,4 @@ assert.equal(packaged.kernelRuntimeCodeHash.toLowerCase(), active.runtimeCodeHas
 assert.equal(packaged.worldId.toLowerCase(), active.core.worldId.toLowerCase());
 assert.equal(packaged.sourceManifestHash.toLowerCase(), active.integrity.manifestHash.toLowerCase());
 
-process.stdout.write("Packaged Base Sepolia deployment matches the active release.\n");
+process.stdout.write("Packaged Ethereum Mainnet deployment matches the active release.\n");

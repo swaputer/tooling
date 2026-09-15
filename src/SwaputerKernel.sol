@@ -4,7 +4,7 @@ pragma solidity 0.8.26;
 import {SwapVMMiniVM} from "./SwapVMMiniVM.sol";
 
 /// @notice Stage 1 NOP plus Stage 2/3 metered SwapVM Kernel with packages, deployment and nested execution.
-contract SwapVMKernel is SwapVMMiniVM {
+contract SwaputerKernel is SwapVMMiniVM {
     uint16 public constant VM_VERSION = 2;
     uint8 public constant RECEIPT_VERSION = 1;
     bytes32 public constant ISA_HASH = 0x5958f1a3baf744e5ed92f096a964ee14779db2e32e70a2982c53080eb3cd92c2;

@@ -13,6 +13,9 @@ import {
 const root = resolve(import.meta.dirname, "../..");
 const config = JSON.parse(readFileSync(resolve(root, "config/base-sepolia-release.json"), "utf8"));
 const artifacts = JSON.parse(readFileSync(resolve(root, "audit/artifacts.json"), "utf8"));
+const kernelArtifact = artifacts.contracts.SwaputerKernel ?? artifacts.contracts.SwapVMKernel;
+const hookArtifact = artifacts.contracts.SwaputerHook ?? artifacts.contracts.SwapVMHook;
+assert.ok(kernelArtifact && hookArtifact, "missing Kernel/Hook artifact inventory");
 const rpcUrl = process.env.SWAPVM_BASE_SEPOLIA_RPC_SECONDARY;
 if (rpcUrl === undefined || rpcUrl.length === 0) throw new Error("RPC_ENV_UNSET");
 
@@ -129,8 +132,8 @@ async function main() {
     referenceRegistry: identities.referenceRegistry,
     worldDeployer: identities.worldDeployer,
     artifactStores: {
-      kernelCreationCode: { ...identities.kernelCreationCodeStore, payloadHash: artifacts.contracts.SwapVMKernel.creationCodeHash },
-      hookCreationCode: { ...identities.hookCreationCodeStore, payloadHash: artifacts.contracts.SwapVMHook.creationCodeHash }
+      kernelCreationCode: { ...identities.kernelCreationCodeStore, payloadHash: kernelArtifact.creationCodeHash },
+      hookCreationCode: { ...identities.hookCreationCodeStore, payloadHash: hookArtifact.creationCodeHash }
     },
     world: {
       poolKey: {

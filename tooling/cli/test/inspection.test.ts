@@ -79,6 +79,13 @@ test("loads the packaged active Base Sepolia deployment", async () => {
   assert.throws(() => parseDeployment({ ...current, unexpected: true }), (error: unknown) => error instanceof InspectionError && error.code === InspectionErrorCode.INVALID_DEPLOYMENT);
 });
 
+test("loads the packaged active Ethereum Mainnet deployment", async () => {
+  const current = await loadDeployment("ethereum-mainnet");
+  assert.equal(current.chainId, 1n);
+  assert.equal(current.releaseName, "swaputer-v1.2-mainnet");
+  assert.equal(current.kernel, "0x67b591767b3ddc732944e122f99ff18dd78aa21e");
+});
+
 test("strictly recognizes and decodes a Kernel Events receipt", () => {
   const decoded = inspectRpcReceipt(receipt(), deployment);
   assert.equal(decoded.executions.length, 1);
